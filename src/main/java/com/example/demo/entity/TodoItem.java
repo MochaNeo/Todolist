@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 //データベースから取得したデータを格納するentityクラス
-@Entity
+@Entity(name = "TodoItem")
 @Table(name = "todoitems")
 @Getter
 @Setter
@@ -23,13 +23,13 @@ public class TodoItem {
 	private String category;//仕事か、私生活か、その他か
     private String title;//タイトル
     private String description;//詳細
-    private Integer priority;//優先度
+    private String priority;//優先度
     private Date createDate;//作成日
     private Date dueDate;//期日
     private Boolean done;//達成状況
-    
     //プライベートで定義。
-    @PrePersist
+    
+    @PrePersist//作成日を自動生成する
     public void prePersist() {
         this.createDate = new Date(System.currentTimeMillis());
     }

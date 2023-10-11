@@ -5,15 +5,20 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.TodoItem;
 import com.example.demo.form.TodoItemForm;
 import com.example.demo.repository.TodoItemRepository;
+import com.example.demo.service.TodoItemService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 //フロントエンドとバックエンドの入出力の管理を行うControllerクラス
@@ -21,7 +26,11 @@ import jakarta.transaction.Transactional;
 public class HomeController {
 
     @Autowired
-    TodoItemRepository repository;
+    private TodoItemRepository repository;
+    @Autowired
+    TodoItemService todoItemService;
+    @PersistenceContext
+    EntityManager entityManager;
     
     
     //デフォルトのページ
@@ -50,7 +59,7 @@ public class HomeController {
     }
     
     
-    //todoを表示する
+    //未完了のアイテムを表示する
     @PostMapping(value = "/restore")
     public String restore(@RequestParam("id") long id) {
         Optional<TodoItem> itemOptional = this.repository.findById(id);
@@ -70,11 +79,11 @@ public class HomeController {
         String category = item.getCategory();
         String title = item.getTitle();
         String description = item.getDescription();
-        Integer priority = item.getPriority();
+        String priority = item.getPriority();
         Date dueDate = item.getDueDate();
-
-
-        if (title == null || title.trim().isEmpty()) {
+        Date today = new Date(System.currentTimeMillis());
+        
+		if (title == null || title.trim().isEmpty()) {
             // エラーメッセージを設定して、再度表示
             todoItemForm.setErrorMessage("タイトルを入力してください。");
             todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
@@ -82,6 +91,11 @@ public class HomeController {
         } else if (title.trim().toLowerCase().contains("宿題")) {
             // NGワードが含まれている場合、エラーメッセージを設定して、再度表示
             todoItemForm.setErrorMessage("NGワード「宿題」は設定できません。");
+            todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
+            return "index";
+        } else if (dueDate.before(today)) {
+                // 期日が昨日以前の場合、エラーメッセージを設定して、再度表示
+            todoItemForm.setErrorMessage("期日が昨日以前の日付です。有効な日付を設定してください。");
             todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
             return "index";
         } else {
@@ -109,4 +123,46 @@ public class HomeController {
         }
         return "redirect:/?isDone=false"; // リダイレクト
     }
+    
+    
+  //検索結果の受け取り処理
+    //@ModelAttributeでformからformModelを受け取り、
+    //その型(BookData)と変数(bookdata)を指定する
+    @PostMapping(value = "/search")
+    public String select(@ModelAttribute("formModel") TodoItem todoItem, Model model) {
+        // TodoItemServiceのインスタンスを作成
+        java.util.List<TodoItem> result = todoItemService.search(todoItem.getTitle(), todoItem.getCategory(), todoItem.getPriority());
+        model.addAttribute("items", result);
+
+        return "index";
+    }
+
+
+    //詳細画面処理
+    //@PathVariableでURLから受け取った値を取得する
+    @GetMapping(value = "search/{id}")
+    public String detail(@PathVariable long id, Model model) {
+        Optional<TodoItem> itemOptional = this.repository.findById(id);
+        //Optionalを使用する際、値はget()で取得する
+        if (itemOptional.isPresent()) {
+        	TodoItem item = itemOptional.get();
+        	item.setDone(true);
+        	this.repository.save(item);
+        }
+        return "detail";
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

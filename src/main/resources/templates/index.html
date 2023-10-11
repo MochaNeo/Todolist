@@ -14,6 +14,30 @@
     <a th:unless="${todoItemForm.done}" th:href="@{/?isDone=true}">完了したアイテムの表示</a>
     <a th:if="${todoItemForm.done}" th:href="@{/?isDone=false}">TODOの表示</a>
     
+    <h2>検索</h2>
+    	<form method="post" th:action="@{/search}" th:object="${formModel}">
+			<label>タイトル検索</label>
+				<input type="search" name="title"><p>
+	
+			<label>カテゴリー<label/>
+				<select name="category">
+					<option value="null">-</option>
+					<option value="work">仕事</option>
+					<option value="private">趣味・私生活</option>
+					<option value="other">その他</option>
+				</select><p>
+    
+	    	<label>優先度</label>
+    			<select name="priority">
+					<option value="null">-</option>
+        			<option value="low">低</option>
+	        		<option value="middle">中</option>
+    	    		<option value="high">高</option>
+    			</select><p>
+	    	
+    		<input type="submit" value="検索"/><p>
+    	</form>
+    	
     <h3>TODOの追加</h3>
 		<form method="post" th:action="@{/new}">
     		<a>カテゴリー<a/>
@@ -34,11 +58,12 @@
     		
     		<a>優先度</a>
     			<select name="priority">
-        			<option value="1">低</option>
-        			<option value="2">中</option>
-        			<option value="3">高</option>
+        			<option value="low">低</option>
+        			<option value="middle">中</option>
+        			<option value="high">高</option>
     			</select>
-    			
+    		<p></p>
+    		
     		<a>期日</a>
 				<input type="date" id="dueDate" name="dueDate" />
 			<p></p>
@@ -59,7 +84,6 @@
 				document.getElementById('dueDate').value = formattedDate;
 			</script>
 
-    		
     		<input type="submit" value="追加" />
 		</form>
 		<p></p>
@@ -71,17 +95,18 @@
     <h3>TODOリスト</h3>
     <table class="table table-hover">
         <thead>
-            <tr>
+    		<tr>
 				<th>カテゴリー</th>
-                <th>タイトル</th>
+        		<th>タイトル</th>
                 <th>詳細</th>
                 <th>優先度</th>
                 <th>作成日</th>
                 <th>期日</th>
                 <th>完了・未完了</th>
                 <th>削除</th>
-            </tr>
-        </thead>
+    		</tr>
+		</thead>
+
         
         <tbody>
             <tr th:each="todoItem : ${todoItemForm.todoItems}">
@@ -99,10 +124,9 @@
                 
                 <td>
 					<span th:switch="${todoItem.priority}">
-						<span th:case="1">低</span>
-						<span th:case="2">中</span>
-						<span th:case="3">高</span>
-						<span th:case="*">未設定</span>
+						<span th:case="low">低</span>
+						<span th:case="middle">中</span>
+						<span th:case="high">高</span>
 					</span>
 				</td>
 				
