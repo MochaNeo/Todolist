@@ -11,8 +11,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-//データベースから取得したデータを格納するentityクラス
-@Entity(name = "TodoItem")
+//データベースの1レコードを1インスタンスと対応させるためのクラス
+@Entity
 @Table(name = "todoitems")
 @Getter
 @Setter
@@ -27,7 +27,6 @@ public class TodoItem {
     private Date createDate;//作成日
     private Date dueDate;//期日
     private Boolean done;//達成状況
-    //プライベートで定義。
     
     @PrePersist//作成日を自動生成する
     public void prePersist() {

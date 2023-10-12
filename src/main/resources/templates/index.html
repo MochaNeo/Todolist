@@ -8,13 +8,15 @@
 
 <body>
 	
-	
-    <h2 class="display-4 mb-4">ToDo app</h2>
+	<nav>
+    	<h2 class="display-4 mb-4">ToDo app</h2>
+    	<button>
+    		<a th:unless="${todoItemForm.done}" th:href="@{/?isDone=true}">DoneTask</a>
+    		<a th:if="${todoItemForm.done}" th:href="@{/?isDone=false}">TodoTask</a>
+    	</button>
+    </nav>
     
-    <a th:unless="${todoItemForm.done}" th:href="@{/?isDone=true}">DoneTask</a>
-    <a th:if="${todoItemForm.done}" th:href="@{/?isDone=false}">TodoTask</a>
-    
-    
+    <div>
     <h2>Search</h2>
     	<form method="post" th:action="@{/search}" th:object="${formModel}">
 			<label>Title</label>
@@ -42,10 +44,11 @@
 					<option value="1">Done</option>
 				</select><p>
 					
-    		<input type="submit" value="SEARCH"/><p>
+    		<input type="submit" value="Search"/><p>
     	</form>
-    	
-    	
+    </div>
+    
+    <div>
     <h3>AddToDo</h3>
 		<form method="post" th:action="@{/new}">
     		<label>Category</label>
@@ -92,7 +95,7 @@
     	
     <div th:if="${todoItemForm.errorMessage}" th:text="${todoItemForm.errorMessage}" class="error-message"></div>
     <p></p>
-    
+    </div>
     
     <h3>ToDoList</h3>
     <table class="table table-hover">

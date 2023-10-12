@@ -27,6 +27,7 @@ public class TodoItemDaoImpl implements TodoItemDao {
 		entityManager = manager;
 	}
 	
+	
 	//Daoクラスで用意したsearchメソッドをオーバーライドする
 	@SuppressWarnings("unchecked")
 	@Override

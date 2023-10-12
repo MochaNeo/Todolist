@@ -21,7 +21,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
-//フロントエンドとバックエンドの入出力の管理を行うControllerクラス
+//ViewとServiceの橋渡し的な役割。viewからのリクエストをserviceに送る。
 @Controller
 public class HomeController {
 
@@ -35,13 +35,9 @@ public class HomeController {
     
     //デフォルトのページ
     @GetMapping("/")
-    //ModelAttributeでTodoitemformの3つのフィールドをtodoItemFormに渡す。todoItemFormが変数名
-    //クライアントが入力したisDoneを受け取り、boolean型のisDoneに格納する。Optionalとは値が存在しない可能性があることを示す
-    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("isDone") Optional<Boolean> isDone, Model model) {
+    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("isDone") Optional<Boolean> isDone) {
         todoItemForm.setDone(isDone.isPresent() ? isDone.get() : false);
-        //isDoneがある時はtrueない時はfalseを返す。新規にsetするときとかはfalseになる
         todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
-        //TodoItemFormクラスのsetDoneを呼び出し上記の結果をtodoItemFormインスタンスのisDoneフィールドに設定している。
         return "index";
     }
     
@@ -99,7 +95,6 @@ public class HomeController {
             todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
             return "index";
         } else {
-        // ここで item を保存する処理
         item.setCategory(category);
         item.setDescription(description);
         item.setDueDate(dueDate);
@@ -119,19 +114,15 @@ public class HomeController {
         Optional<TodoItem> itemOptional = this.repository.findById(id);
         if (itemOptional.isPresent()) {
             TodoItem item = itemOptional.get();
-            this.repository.delete(item); // タスクを削除
-        }
-        return "redirect:/"; // リダイレクト
+            this.repository.delete(item);         }
+        return "redirect:/";
     }
     
     
     
   //検索結果の受け取り処理
-    //@ModelAttributeでformからformModelを受け取り、
-    //その型(TodoItem)と変数(todoitem)を指定する
     @PostMapping(value = "/search")
     public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
-        // TodoItemServiceのインスタンスを作成
         List<TodoItem> result = todoItemService.search(todoItemForm.getTitle(), 
         												todoItemForm.getCategory(),
         												todoItemForm.getPriority(),

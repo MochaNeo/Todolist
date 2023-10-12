@@ -10,14 +10,15 @@ import com.example.demo.entity.TodoItem;
 import com.example.demo.repository.TodoItemDaoImpl;
 import com.example.demo.repository.TodoItemRepository;
 
+//コントローラーからの指示を受け、必要に応じてRepositoryを介しながら処理を行う。
 @Service
 public class TodoItemService {
-	
 	
     @Autowired
     TodoItemRepository todoItemRepository;
     @Autowired
     TodoItemDaoImpl todoItemDaoImpl;
+    
     //検索
     public List<TodoItem> search(String title, String category, String priority, boolean done) {
     	List<TodoItem> result = new ArrayList<TodoItem>();
