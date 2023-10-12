@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -37,7 +37,7 @@ public class HomeController {
     @GetMapping("/")
     //ModelAttributeでTodoitemformの3つのフィールドをtodoItemFormに渡す。todoItemFormが変数名
     //クライアントが入力したisDoneを受け取り、boolean型のisDoneに格納する。Optionalとは値が存在しない可能性があることを示す
-    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("isDone") Optional<Boolean> isDone) {
+    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("isDone") Optional<Boolean> isDone, Model model) {
         todoItemForm.setDone(isDone.isPresent() ? isDone.get() : false);
         //isDoneがある時はtrueない時はfalseを返す。新規にsetするときとかはfalseになる
         todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
@@ -81,7 +81,7 @@ public class HomeController {
         String description = item.getDescription();
         String priority = item.getPriority();
         Date dueDate = item.getDueDate();
-        Date today = new Date(System.currentTimeMillis());
+        Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
         
 		if (title == null || title.trim().isEmpty()) {
             // エラーメッセージを設定して、再度表示
@@ -93,7 +93,7 @@ public class HomeController {
             todoItemForm.setErrorMessage("NGワード「宿題」は設定できません。");
             todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
             return "index";
-        } else if (dueDate.before(today)) {
+        } else if (dueDate.before(yesterday)) {
                 // 期日が昨日以前の場合、エラーメッセージを設定して、再度表示
             todoItemForm.setErrorMessage("期日が昨日以前の日付です。有効な日付を設定してください。");
             todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
@@ -121,48 +121,25 @@ public class HomeController {
             TodoItem item = itemOptional.get();
             this.repository.delete(item); // タスクを削除
         }
-        return "redirect:/?isDone=false"; // リダイレクト
+        return "redirect:/"; // リダイレクト
     }
+    
     
     
   //検索結果の受け取り処理
     //@ModelAttributeでformからformModelを受け取り、
-    //その型(BookData)と変数(bookdata)を指定する
+    //その型(TodoItem)と変数(todoitem)を指定する
     @PostMapping(value = "/search")
-    public String select(@ModelAttribute("formModel") TodoItem todoItem, Model model) {
+    public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
         // TodoItemServiceのインスタンスを作成
-        java.util.List<TodoItem> result = todoItemService.search(todoItem.getTitle(), todoItem.getCategory(), todoItem.getPriority());
-        model.addAttribute("items", result);
-
+        List<TodoItem> result = todoItemService.search(todoItemForm.getTitle(), 
+        												todoItemForm.getCategory(),
+        												todoItemForm.getPriority(),
+        												todoItemForm.isDone());
+        todoItemForm.setTodoItems(result); // 検索結果をセット
+        model.addAttribute("todoItemForm", todoItemForm);
         return "index";
     }
 
 
-    //詳細画面処理
-    //@PathVariableでURLから受け取った値を取得する
-    @GetMapping(value = "search/{id}")
-    public String detail(@PathVariable long id, Model model) {
-        Optional<TodoItem> itemOptional = this.repository.findById(id);
-        //Optionalを使用する際、値はget()で取得する
-        if (itemOptional.isPresent()) {
-        	TodoItem item = itemOptional.get();
-        	item.setDone(true);
-        	this.repository.save(item);
-        }
-        return "detail";
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }

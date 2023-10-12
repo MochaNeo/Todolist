@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,26 +18,15 @@ public class TodoItemService {
     TodoItemRepository todoItemRepository;
     @Autowired
     TodoItemDaoImpl todoItemDaoImpl;
-    
-    
-    //全体検索
-    public Optional<TodoItem> findById(long id) {
-    	return todoItemRepository.findById(id);
-    }
-    //保存
-    public TodoItem save(TodoItem todoItem) {
-    	return todoItemRepository.saveAndFlush(todoItem);
-    }
     //検索
-    public List<TodoItem> search(String title, String category, String priority) {
+    public List<TodoItem> search(String title, String category, String priority, boolean done) {
     	List<TodoItem> result = new ArrayList<TodoItem>();
     	
-    	if("".equals(title) && "".equals(category) && "".equals(priority)) {
+    	if("".equals(title) && "".equals(category) && "".equals(priority) && "".equals(done)) {
     		result = todoItemRepository.findAll();
     	} else {
-    		result = todoItemDaoImpl.search(title, category, priority);
+    		result = todoItemDaoImpl.search(title, category, priority, done);
     	}
     	return result;
     }
-    
 }

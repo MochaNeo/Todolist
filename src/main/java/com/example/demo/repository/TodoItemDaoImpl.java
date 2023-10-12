@@ -30,7 +30,7 @@ public class TodoItemDaoImpl implements TodoItemDao {
 	//Daoクラスで用意したsearchメソッドをオーバーライドする
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<TodoItem> search(String title, String category, String priority) {
+	public List<TodoItem> search(String title, String category, String priority, boolean done) {
 		//stringBuilderでsql文を連結する
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT b FROM TodoItem b WHERE ");
@@ -38,6 +38,7 @@ public class TodoItemDaoImpl implements TodoItemDao {
 		boolean titleFlg = false;
 		boolean categoryFlg = false;
 		boolean priorityFlg = false;
+		boolean doneFlg = false;
 		boolean andFlg = false;
 		
 		
@@ -47,25 +48,33 @@ public class TodoItemDaoImpl implements TodoItemDao {
 			andFlg   = true;
 		}
 		
-		if(!"".equals(category)) {
+		if(!"null".equals(category)) {
             if (andFlg) sql.append(" AND ");
             sql.append("b.category LIKE :category");
             categoryFlg = true;
             andFlg    = true;
         }
 		
-		if(!"".equals(priority)) {
+		if(!"null".equals(priority)) {
             if (andFlg) sql.append(" AND ");
             sql.append("b.priority LIKE :priority");
             priorityFlg = true;
             andFlg   = true;
         }
-
-		Query query = entityManager.createQuery(sql.toString());
 		
-		if (titleFlg) query.setParameter("title", "%" + title + "%");
-        if (categoryFlg) query.setParameter("category", "%" + category + "%");
-        if (priorityFlg) query.setParameter("priority", "%" + priority + "%");
-        return query.getResultList();
+		if (done) {
+	        if (andFlg) sql.append(" AND ");
+	        sql.append("b.done = :done");
+	        doneFlg = true;
+	    }
+
+	    Query query = entityManager.createQuery(sql.toString());
+
+	    if (titleFlg) query.setParameter("title", "%" + title + "%");
+	    if (categoryFlg) query.setParameter("category", "%" + category + "%");
+	    if (priorityFlg) query.setParameter("priority", "%" + priority + "%");
+	    if (doneFlg) query.setParameter("done", done);
+
+	    return query.getResultList();
 	}
 }

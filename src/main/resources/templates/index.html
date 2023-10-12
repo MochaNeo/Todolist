@@ -9,101 +9,103 @@
 <body>
 	
 	
-    <h2 class="display-4 mb-4">Todo app</h2>
+    <h2 class="display-4 mb-4">ToDo app</h2>
     
-    <a th:unless="${todoItemForm.done}" th:href="@{/?isDone=true}">完了したアイテムの表示</a>
-    <a th:if="${todoItemForm.done}" th:href="@{/?isDone=false}">TODOの表示</a>
+    <a th:unless="${todoItemForm.done}" th:href="@{/?isDone=true}">DoneTask</a>
+    <a th:if="${todoItemForm.done}" th:href="@{/?isDone=false}">TodoTask</a>
     
-    <h2>検索</h2>
+    
+    <h2>Search</h2>
     	<form method="post" th:action="@{/search}" th:object="${formModel}">
-			<label>タイトル検索</label>
-				<input type="search" name="title"><p>
+			<label>Title</label>
+				<input type="text" name="title"><p>
 	
-			<label>カテゴリー<label/>
+			<label>Category<label/>
 				<select name="category">
-					<option value="null">-</option>
-					<option value="work">仕事</option>
-					<option value="private">趣味・私生活</option>
-					<option value="other">その他</option>
+					<option value="">-</option>
+					<option value="work">Work</option>
+					<option value="private">Private</option>
+					<option value="other">Other</option>
 				</select><p>
     
-	    	<label>優先度</label>
+	    	<label>Priority</label>
     			<select name="priority">
-					<option value="null">-</option>
-        			<option value="low">低</option>
-	        		<option value="middle">中</option>
-    	    		<option value="high">高</option>
+					<option value="">-</option>
+        			<option value="low">Low</option>
+	        		<option value="middle">Middle</option>
+    	    		<option value="high">High</option>
     			</select><p>
-	    	
-    		<input type="submit" value="検索"/><p>
+			
+			<label>Done・ToDo</label>
+				<select name="done">
+					<option value="0">ToDo</option>
+					<option value="1">Done</option>
+				</select><p>
+					
+    		<input type="submit" value="SEARCH"/><p>
     	</form>
     	
-    <h3>TODOの追加</h3>
+    	
+    <h3>AddToDo</h3>
 		<form method="post" th:action="@{/new}">
-    		<a>カテゴリー<a/>
+    		<label>Category</label>
     			<select name="category">
-        			<option value="work">仕事</option>
-        			<option value="private">趣味・私生活</option>
-    	    		<option value="other">その他</option>
-    			</select>
-    		<p></p>
+        			<option value="work">Work</option>
+        			<option value="private">Private</option>
+    	    		<option value="other">Other</option>
+    			</select><p>
     		
-    		<a>タイトル</a>
-    			<input type="text" name="title" />
-    		<p></p>
+    		<label>Title</label>
+    			<input type="text" name="title" /><p>
     		
-    		<a>詳細</a>
-    			<input type="text" name="description" />
-    		<p></p>
+    		<label>Detail</label>
+    			<input type="text" name="description" /><p>
     		
-    		<a>優先度</a>
+    		<label>Priority</label>
     			<select name="priority">
-        			<option value="low">低</option>
-        			<option value="middle">中</option>
-        			<option value="high">高</option>
-    			</select>
-    		<p></p>
+        			<option value="low">Low</option>
+        			<option value="middle">Middle</option>
+        			<option value="high">High</option>
+    			</select><p>
     		
-    		<a>期日</a>
-				<input type="date" id="dueDate" name="dueDate" />
-			<p></p>
+    		<label>DueDate</label>
+				<input type="date" id="dueDate" name="dueDate" /><p>
 
-			<script>
-				// 今日の日付を取得
-				var today = new Date();
+				<script>
+					// 今日の日付を取得
+					var today = new Date();
+	
+					// 年、月、日を取得
+					var year = today.getFullYear();
+					var month = (today.getMonth() + 1).toString().padStart(2, '0'); // 月は0から始まるため+1が必要
+					var day = today.getDate().toString().padStart(2, '0');
+	
+					// "YYYY-MM-DD" 形式の日付文字列を作成
+					var formattedDate = year + '-' + month + '-' + day;
+	
+					// input要素にデフォルト値として設定
+					document.getElementById('dueDate').value = formattedDate;
+				</script>
 
-				// 年、月、日を取得
-				var year = today.getFullYear();
-				var month = (today.getMonth() + 1).toString().padStart(2, '0'); // 月は0から始まるため+1が必要
-				var day = today.getDate().toString().padStart(2, '0');
-
-				// "YYYY-MM-DD" 形式の日付文字列を作成
-				var formattedDate = year + '-' + month + '-' + day;
-
-				// input要素にデフォルト値として設定
-				document.getElementById('dueDate').value = formattedDate;
-			</script>
-
-    		<input type="submit" value="追加" />
-		</form>
-		<p></p>
+    		<input type="submit" value="AddTask" />
+		</form><p>
     	
     <div th:if="${todoItemForm.errorMessage}" th:text="${todoItemForm.errorMessage}" class="error-message"></div>
     <p></p>
     
     
-    <h3>TODOリスト</h3>
+    <h3>ToDoList</h3>
     <table class="table table-hover">
         <thead>
     		<tr>
-				<th>カテゴリー</th>
-        		<th>タイトル</th>
-                <th>詳細</th>
-                <th>優先度</th>
-                <th>作成日</th>
-                <th>期日</th>
-                <th>完了・未完了</th>
-                <th>削除</th>
+				<th>Category</th>
+        		<th>Title</th>
+                <th>Detail</th>
+                <th>Priority</th>
+                <th>CreateDate</th>
+                <th>DueDate</th>
+                <th>Done・Restore</th>
+                <th>Delete</th>
     		</tr>
 		</thead>
 
@@ -113,9 +115,9 @@
 				
 				<td>
 					<span th:switch="${todoItem.category}">
-						<span th:case="work">仕事</span>
-						<span th:case="private">趣味・私生活</span>
-						<span th:case="other">その他</span>
+						<span th:case="work">Work</span>
+						<span th:case="private">Private</span>
+						<span th:case="other">Other</span>
 					</span>
 				</td>
 				
@@ -124,9 +126,9 @@
                 
                 <td>
 					<span th:switch="${todoItem.priority}">
-						<span th:case="low">低</span>
-						<span th:case="middle">中</span>
-						<span th:case="high">高</span>
+						<span th:case="low">Low</span>
+						<span th:case="middle">Middle</span>
+						<span th:case="high">High</span>
 					</span>
 				</td>
 				

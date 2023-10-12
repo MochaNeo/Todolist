@@ -15,7 +15,9 @@ public class TodoItemForm {
     private boolean isDone;
     private String errorMessage;
     private List<TodoItem> todoItems;
-    
+    private String title;
+    private String category;
+    private String priority;
     //boolean型のisDone（）とtodoitemsのリストを作成
     //isDoneは完了か未完了か
 }
