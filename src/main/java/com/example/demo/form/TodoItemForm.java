@@ -17,7 +17,7 @@ public class TodoItemForm {
     private List<TodoItem> todoItems;
     //入力された値を管理するフィールド
     private String title;
-    private String category;
+    private int category;
     private int priority;
     //boolean型のisDone（）とtodoitemsのリストを作成
     //isDoneは完了か未完了か

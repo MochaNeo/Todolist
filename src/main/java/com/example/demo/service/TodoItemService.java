@@ -29,23 +29,23 @@ public class TodoItemService {
     	Date dueDate = item.getDueDate();
     	Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
     	
-    		if (title == null || title.trim().isEmpty()) {
+    		if (title == "") {
     			return "タイトルを入力してください。";
+    		} else if (title.trim().toLowerCase().contains("")) {
+    			return "タイトルに空白が含まれています";
     		} else if (title.trim().toLowerCase().contains("宿題")) {
     			return "NGワード「宿題」は設定できません。";
     		} else if (dueDate.before(yesterday)) {
     			return "期日が昨日以前の日付です。有効な日付を設定してください。";
-    		} else {
-    			
     		}
     	item.setDone(false);
     	repository.save(item);
     	return null; // エラーメッセージがない場合は null を返す
         }
     
-    //検索クエリ作成
+    //todoを検索
     @SuppressWarnings("unchecked")
-    public List<TodoItem> search(String title, String category, int priority, boolean done) {
+    public List<TodoItem> search(String title, int category, int priority, boolean done) {
         List<TodoItem> result = new ArrayList<TodoItem>();
         
         StringBuilder sql = new StringBuilder();
@@ -61,7 +61,7 @@ public class TodoItemService {
             titleFlg = true;
             andFlg = true;
         }
-        if (!"null".equals(category)) {
+        if (0 != category) {
             if (andFlg) sql.append(" AND ");
             sql.append("b.category LIKE :category");
             categoryFlg = true;
@@ -78,10 +78,10 @@ public class TodoItemService {
             sql.append("b.done = :done");
             doneFlg = true;
         }
-        if (!"".equals(title) || !"null".equals(category) || priority != 0 || done) {
+        if (!"".equals(title) || category != 0 || priority != 0 || done) {
             Query query = entityManager.createQuery(sql.toString());
             if (titleFlg) query.setParameter("title", "%" + title + "%");
-            if (categoryFlg) query.setParameter("category", "%" + category + "%");
+            if (categoryFlg) query.setParameter("category", category);
             if (priorityFlg) query.setParameter("priority", priority);
             if (doneFlg) query.setParameter("done", done);
             result = query.getResultList();
@@ -92,12 +92,19 @@ public class TodoItemService {
         return result;
     }
 
-    
-    //getTodoItemsでidDoneの内容を降順で表示する
+    //getTodoItemsでisDoneの内容を降順で表示する
     public List<TodoItem> getTodoItems(boolean isDone) {
     	return repository.findByDoneOrderByPriorityDesc(isDone);
     }
 
-    //
-
+    //完了したアイテム、未完了のアイテムを表示
+    @Transactional
+    public void updateDoneStatus(long id, boolean done) {
+    	java.util.Optional<TodoItem> itemOptional = repository.findById(id);
+    		if (itemOptional.isPresent()) {
+    			TodoItem item = itemOptional.get();
+    			item.setDone(done);
+    			repository.save(item);
+            }
+    	}
 }

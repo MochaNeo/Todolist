@@ -38,34 +38,16 @@ public class HomeController {
     }
     
     //完了したアイテムを表示する
-    @PostMapping(value = "/done")
-    public String done(@RequestParam("id") long id) {
-        Optional<TodoItem> itemOptional = this.repository.findById(id);
-        if (itemOptional.isPresent()) {
-            TodoItem item = itemOptional.get();
-            item.setDone(true);
-            this.repository.save(item);
-        }
-        return "redirect:/?done=false";
-    }
-    
-    //未完了のアイテムを表示する
-    @PostMapping(value = "/restore")
-    public String restore(@RequestParam("id") long id) {
-        Optional<TodoItem> itemOptional = this.repository.findById(id);
-        if (itemOptional.isPresent()) {
-            TodoItem item = itemOptional.get();
-            item.setDone(false);
-            this.repository.save(item);
-        }
-        return "redirect:/?done=true";
+    @PostMapping(value = "/updateDoneStatus")
+    public String updateDoneStatus(@RequestParam("id") long id, @RequestParam("done") boolean done) {
+        todoItemService.updateDoneStatus(id, done);
+        return "redirect:/?done=" + done;
     }
     
     //todoを追加する
     @PostMapping(value = "/new")
     public String newItem(@ModelAttribute TodoItemForm todoItemForm, TodoItem item) {
     	String result = todoItemService.createNewTodoItem(item, todoItemForm.isDone());
-    	
     	if (result != null) {
     		todoItemForm.setErrorMessage(result);
     		todoItemForm.setTodoItems(todoItemService.getTodoItems(todoItemForm.isDone()));
@@ -85,11 +67,13 @@ public class HomeController {
         return "redirect:/";
     }
     
-  //検索結果の受け取り処理
+  //todoを検索する
     @PostMapping(value = "/search")
     public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
-        List<TodoItem> searchResult = todoItemService.search(todoItemForm.getTitle(), todoItemForm.getCategory(),
-        												todoItemForm.getPriority(),todoItemForm.isDone());
+        List<TodoItem> searchResult = todoItemService.search(todoItemForm.getTitle(),
+        													todoItemForm.getCategory(),
+        													todoItemForm.getPriority(),
+        													todoItemForm.isDone());
         todoItemForm.setTodoItems(searchResult); // 検索結果をセット
         model.addAttribute("todoItemForm", todoItemForm);
         return "index";

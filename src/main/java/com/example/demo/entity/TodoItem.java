@@ -19,7 +19,7 @@ public class TodoItem {
 	@Id//プライマリキーとしてidを指定
     @GeneratedValue(strategy = GenerationType.IDENTITY)//自動的に番号を生成
     private Long id;//主キー
-	private String category;//仕事か、私生活か、その他か
+	private int category;//仕事か、私生活か、その他か
     private String title;//タイトル
     private String description;//詳細
     private int priority;//優先度
