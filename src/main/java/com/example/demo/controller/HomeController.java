@@ -1,6 +1,4 @@
 package com.example.demo.controller;
-
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,15 +30,12 @@ public class HomeController {
     @PersistenceContext
     EntityManager entityManager;
     
-    
     //デフォルトのページ
     @GetMapping("/")
-    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("isDone") Optional<Boolean> isDone) {
-        todoItemForm.setDone(isDone.isPresent() ? isDone.get() : false);
+    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done) {
         todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
         return "index";
     }
-    
     
     //完了したアイテムを表示する
     @PostMapping(value = "/done")
@@ -51,9 +46,8 @@ public class HomeController {
             item.setDone(true);
             this.repository.save(item);
         }
-        return "redirect:/?isDone=false";
+        return "redirect:/?done=false";
     }
-    
     
     //未完了のアイテムを表示する
     @PostMapping(value = "/restore")
@@ -64,48 +58,21 @@ public class HomeController {
             item.setDone(false);
             this.repository.save(item);
         }
-        return "redirect:/?isDone=true";
+        return "redirect:/?done=true";
     }
-    
     
     //todoを追加する
     @PostMapping(value = "/new")
-    @Transactional
     public String newItem(@ModelAttribute TodoItemForm todoItemForm, TodoItem item) {
-        String category = item.getCategory();
-        String title = item.getTitle();
-        String description = item.getDescription();
-        String priority = item.getPriority();
-        Date dueDate = item.getDueDate();
-        Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
-        
-		if (title == null || title.trim().isEmpty()) {
-            // エラーメッセージを設定して、再度表示
-            todoItemForm.setErrorMessage("タイトルを入力してください。");
-            todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
-            return "index";
-        } else if (title.trim().toLowerCase().contains("宿題")) {
-            // NGワードが含まれている場合、エラーメッセージを設定して、再度表示
-            todoItemForm.setErrorMessage("NGワード「宿題」は設定できません。");
-            todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
-            return "index";
-        } else if (dueDate.before(yesterday)) {
-                // 期日が昨日以前の場合、エラーメッセージを設定して、再度表示
-            todoItemForm.setErrorMessage("期日が昨日以前の日付です。有効な日付を設定してください。");
-            todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone())); // タスクリストを再取得
-            return "index";
-        } else {
-        item.setCategory(category);
-        item.setDescription(description);
-        item.setDueDate(dueDate);
-        item.setPriority(priority);
-        item.setDone(false);
-        this.repository.save(item);
-        
-        return "redirect:/";
-        }
+    	String result = todoItemService.createNewTodoItem(item, todoItemForm.isDone());
+    	
+    	if (result != null) {
+    		todoItemForm.setErrorMessage(result);
+    		todoItemForm.setTodoItems(todoItemService.getTodoItems(todoItemForm.isDone()));
+    		return "index";
+    	}
+    	return "redirect:/";
     }
-    
     
     //todoを削除する
     @PostMapping(value = "/delete")
@@ -118,19 +85,13 @@ public class HomeController {
         return "redirect:/";
     }
     
-    
-    
   //検索結果の受け取り処理
     @PostMapping(value = "/search")
     public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
-        List<TodoItem> result = todoItemService.search(todoItemForm.getTitle(), 
-        												todoItemForm.getCategory(),
-        												todoItemForm.getPriority(),
-        												todoItemForm.isDone());
-        todoItemForm.setTodoItems(result); // 検索結果をセット
+        List<TodoItem> searchResult = todoItemService.search(todoItemForm.getTitle(), todoItemForm.getCategory(),
+        												todoItemForm.getPriority(),todoItemForm.isDone());
+        todoItemForm.setTodoItems(searchResult); // 検索結果をセット
         model.addAttribute("todoItemForm", todoItemForm);
         return "index";
     }
-
-
 }

@@ -8,15 +8,16 @@
 
 <body>
 	
+	
 	<nav>
     	<h2 class="display-4 mb-4">ToDo app</h2>
     	<button>
-    		<a th:unless="${todoItemForm.done}" th:href="@{/?isDone=true}">DoneTask</a>
-    		<a th:if="${todoItemForm.done}" th:href="@{/?isDone=false}">TodoTask</a>
+    		<a th:unless="${todoItemForm.done}" th:href="@{/?done=true}">DoneTask</a>
+    		<a th:if="${todoItemForm.done}" th:href="@{/?done=false}">TodoTask</a>
     	</button>
     </nav>
     
-    <div>
+    
     <h2>Search</h2>
     	<form method="post" th:action="@{/search}" th:object="${formModel}">
 			<label>Title</label>
@@ -31,12 +32,13 @@
 				</select><p>
     
 	    	<label>Priority</label>
-    			<select name="priority">
-					<option value="">-</option>
-        			<option value="low">Low</option>
-	        		<option value="middle">Middle</option>
-    	    		<option value="high">High</option>
-    			</select><p>
+				<select name="priority">
+    				<option value="0">-</option>
+    				<option value="1">Low</option>
+    				<option value="2">Middle</option>
+    				<option value="3">High</option>
+				</select><p>
+
 			
 			<label>Done・ToDo</label>
 				<select name="done">
@@ -46,9 +48,9 @@
 					
     		<input type="submit" value="Search"/><p>
     	</form>
-    </div>
     
-    <div>
+    
+    
     <h3>AddToDo</h3>
 		<form method="post" th:action="@{/new}">
     		<label>Category</label>
@@ -66,9 +68,9 @@
     		
     		<label>Priority</label>
     			<select name="priority">
-        			<option value="low">Low</option>
-        			<option value="middle">Middle</option>
-        			<option value="high">High</option>
+        			<option value="1">Low</option>
+        			<option value="2">Middle</option>
+        			<option value="3">High</option>
     			</select><p>
     		
     		<label>DueDate</label>
@@ -93,9 +95,9 @@
     		<input type="submit" value="AddTask" />
 		</form><p>
     	
-    <div th:if="${todoItemForm.errorMessage}" th:text="${todoItemForm.errorMessage}" class="error-message"></div>
-    <p></p>
-    </div>
+    <div th:if="${todoItemForm.errorMessage}" th:text="${todoItemForm.errorMessage}" class="error-message"></div></p>
+    
+    
     
     <h3>ToDoList</h3>
     <table class="table table-hover">
@@ -111,7 +113,6 @@
                 <th>Delete</th>
     		</tr>
 		</thead>
-
         
         <tbody>
             <tr th:each="todoItem : ${todoItemForm.todoItems}">
@@ -129,9 +130,9 @@
                 
                 <td>
 					<span th:switch="${todoItem.priority}">
-						<span th:case="low">Low</span>
-						<span th:case="middle">Middle</span>
-						<span th:case="high">High</span>
+						<span th:case="1">Low</span>
+						<span th:case="2">Middle</span>
+						<span th:case="3">High</span>
 					</span>
 				</td>
 				

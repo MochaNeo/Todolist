@@ -10,4 +10,5 @@ import com.example.demo.entity.TodoItem;
 //JpaRepositoryクラスを継承してentity名と主キーの型を入れる
 public interface TodoItemRepository extends JpaRepository<TodoItem, Long> {
     public List<TodoItem> findByDoneOrderByPriorityDesc(boolean done);
+    
 }

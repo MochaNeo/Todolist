@@ -1,5 +1,4 @@
 package com.example.demo.entity;
-
 import java.sql.Date;
 
 import jakarta.persistence.Entity;
@@ -23,12 +22,13 @@ public class TodoItem {
 	private String category;//仕事か、私生活か、その他か
     private String title;//タイトル
     private String description;//詳細
-    private String priority;//優先度
+    private int priority;//優先度
     private Date createDate;//作成日
     private Date dueDate;//期日
     private Boolean done;//達成状況
     
-    @PrePersist//作成日を自動生成する
+    //作成日を自動生成する
+    @PrePersist
     public void prePersist() {
         this.createDate = new Date(System.currentTimeMillis());
     }
