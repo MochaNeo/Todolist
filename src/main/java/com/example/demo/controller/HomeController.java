@@ -15,21 +15,27 @@ import com.example.demo.entity.TodoItem;
 import com.example.demo.form.TodoItemForm;
 import com.example.demo.repository.TodoItemRepository;
 import com.example.demo.service.TodoItemServiceAdd;
-import com.example.demo.service.TodoItemServiceDoneStatus;
 import com.example.demo.service.TodoItemServiceSearch;
+import com.example.demo.service.TodoItemServiceStatus;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 
 //ViewとServiceの橋渡し的な役割。viewからのリクエストをserviceに送る。
 @Controller
 public class HomeController {
-
+	
     @Autowired
     TodoItemRepository repository;
     @PersistenceContext
     EntityManager entityManager;
+    @Autowired
+    private TodoItemServiceStatus todoItemServiceStatus;
+    @Autowired
+    private TodoItemServiceAdd todoItemServiceAdd;// TodoItemServiceAddクラスのインスタンスをDIする
+    @Autowired
+    private TodoItemServiceSearch todoItemServiceSearch; // TodoItemServiceSearchクラスのインスタンスをDIする
+    
     
     //デフォルトのページ
     @GetMapping("/")
@@ -39,18 +45,25 @@ public class HomeController {
     }
     
     
-    //完了したアイテムを表示する
-    @PostMapping(value = "/updateDoneStatus")
-    public String updateDoneStatus(@RequestParam("id") long id, @RequestParam("done") boolean done) {
-        TodoItemServiceDoneStatus todoItemServiceDoneStatus = new TodoItemServiceDoneStatus();
-		todoItemServiceDoneStatus.updateDoneStatus(id, done);
-        return "redirect:/?done=" + done;
+    //アイテムを完了にする
+    @PostMapping(value = "/done")
+    public String done(@RequestParam("id") long id) {
+        boolean done = true;
+        todoItemServiceStatus.updateDoneStatus(id, done); // インスタンスを使用してメソッドを呼び出す
+        return "redirect:/?done=false";
+    }
+    
+    
+    //アイテムを未完了にする
+    @PostMapping(value = "/restore")
+    public String restore(@RequestParam("id") long id) {
+        boolean done = false;
+        todoItemServiceStatus.updateDoneStatus(id, done); // インスタンスを使用してメソッドを呼び出す
+        return "redirect:/?done=true";
     }
     
     
     //todoを追加する
-    @Autowired
-    private TodoItemServiceAdd todoItemServiceAdd;// TodoItemServiceAddクラスのインスタンスをDIする
     @PostMapping(value = "/new")
     public String newItem(@ModelAttribute TodoItemForm todoItemForm, TodoItem item) {
         String result = todoItemServiceAdd.createNewTodoItem(item, todoItemForm.isDone());
@@ -65,19 +78,13 @@ public class HomeController {
     
     //todoを削除する
     @PostMapping(value = "/delete")
-    @Transactional
     public String delete(@RequestParam("id") long id) {
-        Optional<TodoItem> itemOptional = this.repository.findById(id);
-        if (itemOptional.isPresent()) {
-            TodoItem item = itemOptional.get();
-            this.repository.delete(item);         }
+    	todoItemServiceStatus.deleteTodo(id);
         return "redirect:/";
     }
     
     
     //todoを検索する
-    @Autowired
-    private TodoItemServiceSearch todoItemServiceSearch; // TodoItemServiceSearchクラスのインスタンスをDIする
     @PostMapping(value = "/search")
     public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
         List<TodoItem> searchResult = todoItemServiceSearch.search(todoItemForm.getTitle(),
@@ -88,5 +95,4 @@ public class HomeController {
         model.addAttribute("todoItemForm", todoItemForm);
         return "index";
     }
-
 }

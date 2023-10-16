@@ -7,8 +7,7 @@ import com.example.demo.entity.TodoItem;
 import lombok.Getter;
 import lombok.Setter;
 
-//controllerからThymeleafにデータを渡すクラス
-//TodoItemと分けるのはデータベースに関係ない表示処理とかを定義するため
+//フォームの内容を管理する
 @Getter
 @Setter
 public class TodoItemForm {

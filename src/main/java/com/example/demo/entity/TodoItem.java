@@ -27,6 +27,7 @@ public class TodoItem {
     private Date dueDate;//期日
     private Boolean done;//達成状況
     
+    
     //作成日を自動生成する
     @PrePersist
     public void prePersist() {

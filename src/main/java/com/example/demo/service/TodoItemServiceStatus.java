@@ -10,14 +10,14 @@ import com.example.demo.repository.TodoItemRepository;
 
 import jakarta.transaction.Transactional;
 
+//テーブルの更新
 @Service
-public class TodoItemServiceDoneStatus {
+public class TodoItemServiceStatus {
 	
 	@Autowired
-    TodoItemRepository repository;
-    
-	//完了したアイテム、未完了のアイテムを表示
-    @Transactional
+	TodoItemRepository repository;
+	
+	//todoステータスの変更
     public void updateDoneStatus(long id, boolean done) {
     	Optional<TodoItem> itemOptional = repository.findById(id);
     	if (itemOptional.isPresent()) {
@@ -25,5 +25,15 @@ public class TodoItemServiceDoneStatus {
     		item.setDone(done);
     		repository.save(item);
     	}
+    }
+    
+    //todoの削除
+    @Transactional
+	public void deleteTodo(long id) {
+		Optional<TodoItem> itemOptional = this.repository.findById(id);
+        if (itemOptional.isPresent()) {
+            TodoItem item = itemOptional.get();
+            this.repository.delete(item);         
+        }
     }
 }
