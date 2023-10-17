@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,22 +16,16 @@ public class TodoItemServiceStatus {
 	TodoItemRepository repository;
 	
 	//todoステータスの変更
-    public void updateDoneStatus(long id, boolean done) {
-    	Optional<TodoItem> itemOptional = repository.findById(id);
-    	if (itemOptional.isPresent()) {
-    		TodoItem item = itemOptional.get();
-    		item.setDone(done);
-    		repository.save(item);
-    	}
-    }
-    
+	public void updateDoneStatus(long id, boolean done) {
+	    TodoItem item = repository.findById(id).get();
+	    item.setDone(done);
+	    repository.save(item);
+	}
+
     //todoの削除
     @Transactional
 	public void deleteTodo(long id) {
-		Optional<TodoItem> itemOptional = this.repository.findById(id);
-        if (itemOptional.isPresent()) {
-            TodoItem item = itemOptional.get();
-            this.repository.delete(item);         
-        }
+    	TodoItem item = repository.findById(id).get();
+    	repository.delete(item);
     }
 }

@@ -30,7 +30,6 @@ public class TodoItemServiceSearch {
         category.put(3, "other");
         return category;
     }
-    
     //priorityの項目の管理
     public static Map<Integer, String> getPriority() {
         Map<Integer, String> priority = new HashMap<Integer, String>();
@@ -39,6 +38,7 @@ public class TodoItemServiceSearch {
         priority.put(3, "High");
         return priority;
     }
+    
     //postの入力値の有無
     @SuppressWarnings("unchecked")
     public List<TodoItem> search(String title, int category, int priority, boolean done) {
@@ -55,4 +55,6 @@ public class TodoItemServiceSearch {
         }
         return result;
     }
+    
+    
 }

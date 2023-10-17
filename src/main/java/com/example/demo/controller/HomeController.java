@@ -52,8 +52,7 @@ public class HomeController {
     //アイテムを完了にする
     @PostMapping(value = "/done")
     public String done(@RequestParam("id") long id) {
-        boolean done = true;
-        todoItemServiceStatus.updateDoneStatus(id, done);
+        todoItemServiceStatus.updateDoneStatus(id, true);
         return "redirect:/?done=false";
     }
     
@@ -61,10 +60,10 @@ public class HomeController {
     //アイテムを未完了にする
     @PostMapping(value = "/restore")
     public String restore(@RequestParam("id") long id) {
-        boolean done = false;
-        todoItemServiceStatus.updateDoneStatus(id, done);
+        todoItemServiceStatus.updateDoneStatus(id, false);
         return "redirect:/?done=true";
     }
+    
     
     
     // todoを追加する
