@@ -22,9 +22,8 @@ public class TodoItemServiceSearch {
     @Autowired
     EntityManager entityManager;
     
-    
     //categoryの項目の管理
-    public Map<Integer, String> getCategory() {
+    public static Map<Integer, String> getCategory() {
         Map<Integer, String> category = new HashMap<Integer, String>();
         category.put(1, "work");
         category.put(2, "private");
@@ -33,15 +32,13 @@ public class TodoItemServiceSearch {
     }
     
     //priorityの項目の管理
-    public Map<Integer, String> getPriority() {
+    public static Map<Integer, String> getPriority() {
         Map<Integer, String> priority = new HashMap<Integer, String>();
         priority.put(1, "Low");
         priority.put(2, "Middle");
         priority.put(3, "High");
         return priority;
     }
-
-    
     //postの入力値の有無
     @SuppressWarnings("unchecked")
     public List<TodoItem> search(String title, int category, int priority, boolean done) {

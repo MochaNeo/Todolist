@@ -29,12 +29,13 @@ public class HomeController {
     TodoItemRepository repository;
     @PersistenceContext
     EntityManager entityManager;
+    //TodoItemService〇〇クラスのインスタンスをDIする
     @Autowired
     private TodoItemServiceStatus todoItemServiceStatus;
     @Autowired
-    private TodoItemServiceAdd todoItemServiceAdd;// TodoItemServiceAddクラスのインスタンスをDIする
+    private TodoItemServiceAdd todoItemServiceAdd;
     @Autowired
-    private TodoItemServiceSearch todoItemServiceSearch; // TodoItemServiceSearchクラスのインスタンスをDIする
+    private TodoItemServiceSearch todoItemServiceSearch;
     
     
     //デフォルトのページ
@@ -42,8 +43,8 @@ public class HomeController {
     public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done, Model model) {
         todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
         model.addAttribute("todoItemForm", todoItemForm);
-        model.addAttribute("categoryMap", todoItemServiceSearch.getCategory());//categoryをモデルに追加
-        model.addAttribute("priorityMap", todoItemServiceSearch.getPriority());//priorityをモデルに追加
+        model.addAttribute("categoryMap", TodoItemServiceSearch.getCategory());
+        model.addAttribute("priorityMap", TodoItemServiceSearch.getPriority());
         return "index";
     }
     
@@ -52,7 +53,7 @@ public class HomeController {
     @PostMapping(value = "/done")
     public String done(@RequestParam("id") long id) {
         boolean done = true;
-        todoItemServiceStatus.updateDoneStatus(id, done); // インスタンスを使用してメソッドを呼び出す
+        todoItemServiceStatus.updateDoneStatus(id, done);
         return "redirect:/?done=false";
     }
     
@@ -61,20 +62,20 @@ public class HomeController {
     @PostMapping(value = "/restore")
     public String restore(@RequestParam("id") long id) {
         boolean done = false;
-        todoItemServiceStatus.updateDoneStatus(id, done); // インスタンスを使用してメソッドを呼び出す
+        todoItemServiceStatus.updateDoneStatus(id, done);
         return "redirect:/?done=true";
     }
     
     
- // todoを追加する
+    // todoを追加する
     @PostMapping(value = "/new")
     public String newItem(@ModelAttribute TodoItemForm todoItemForm, TodoItem item, Model model) {
         String result = todoItemServiceAdd.createNewTodoItem(item, todoItemForm.isDone());
         if (result != null) {
             todoItemForm.setErrorMessage(result);
             todoItemForm.setTodoItems(todoItemServiceAdd.getTodoItems(todoItemForm.isDone()));
-            model.addAttribute("categoryMap", todoItemServiceSearch.getCategory()); // カテゴリーマップを追加
-            model.addAttribute("priorityMap", todoItemServiceSearch.getPriority()); // プライオリティマップを追加
+            model.addAttribute("categoryMap", TodoItemServiceSearch.getCategory());
+            model.addAttribute("priorityMap", TodoItemServiceSearch.getPriority());
             return "index";
         }
         return "redirect:/";
@@ -89,17 +90,17 @@ public class HomeController {
     }
     
     
- // todoを検索する
+    // todoを検索する
     @PostMapping(value = "/search")
     public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
         List<TodoItem> searchResult = todoItemServiceSearch.search(todoItemForm.getTitle(),
-            todoItemForm.getCategory(),
-            todoItemForm.getPriority(),
-            todoItemForm.isDone());
+        															todoItemForm.getCategory(),
+        															todoItemForm.getPriority(),
+        															todoItemForm.isDone());
         todoItemForm.setTodoItems(searchResult); // 検索結果をセット
         model.addAttribute("todoItemForm", todoItemForm);
-        model.addAttribute("categoryMap", todoItemServiceSearch.getCategory()); // カテゴリーマップを追加
-        model.addAttribute("priorityMap", todoItemServiceSearch.getPriority()); // プライオリティマップを追加
+        model.addAttribute("categoryMap", TodoItemServiceSearch.getCategory());
+        model.addAttribute("priorityMap", TodoItemServiceSearch.getPriority());
         return "index";
     }
 }
