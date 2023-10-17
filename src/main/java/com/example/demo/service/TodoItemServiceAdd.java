@@ -17,9 +17,8 @@ public class TodoItemServiceAdd {
     TodoItemRepository repository;
     @Autowired
     TodoItemServiceAddValidator validator;
+    
     @Transactional
-    
-    
     //todoを追加
     public String createNewTodoItem(TodoItem item, boolean isDone) {
         String validationResult = validator.validateAddTodoItem(item);
@@ -31,6 +30,7 @@ public class TodoItemServiceAdd {
         repository.save(item);
         return null;
     }
+    
     
     //getTodoItemsでisDoneの内容を降順で表示する
     public List<TodoItem> getTodoItems(boolean isDone) {

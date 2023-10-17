@@ -27,4 +27,3 @@ public class TodoItemServiceAddValidator {
     	return null;
     }
 }
-

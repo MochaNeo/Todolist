@@ -23,25 +23,20 @@
 			<label>Title</label>
 				<input type="text" name="title"><p>
 	
-			<label>Category<label/>
-				<select name="category">
-					<option value="0">-</option>
-					<option value="1">Work</option>
-					<option value="2">Private</option>
-					<option value="3">Other</option>
-				</select><p>
-    
-	    	<label>Priority</label>
-				<select name="priority">
+			<label>Category</label>
+				<select name="category" class="form-control">
     				<option value="0">-</option>
-    				<option value="1">Low</option>
-    				<option value="2">Middle</option>
-    				<option value="3">High</option>
+    				<option th:each="category:${categoryMap}" th:value="${category.key}" th:text="${category.value}"></option>
 				</select><p>
-
+					
+	    	<label>Priority</label>
+				<select name="priority" class="form-control">
+    				<option value="0">-</option>
+    				<option th:each="priority:${priorityMap}" th:value="${priority.key}" th:text="${priority.value}"></option>
+				</select><p>
 			
 			<label>Done・ToDo</label>
-				<select name="done">
+				<select name="done" class="form-control">
 					<option value="0">ToDo</option>
 					<option value="1">Done</option>
 				</select><p>
@@ -53,12 +48,12 @@
     
     <h3>AddToDo</h3>
 		<form method="post" th:action="@{/new}">
+			
     		<label>Category</label>
-    			<select name="category">
-        			<option value="1">Work</option>
-        			<option value="2">Private</option>
-    	    		<option value="3">Other</option>
-    			</select><p>
+				<select name="category" class="form-control">
+    				<option value="0">-</option>
+    				<option th:each="category:${categoryMap}" th:value="${category.key}" th:text="${category.value}"></option>
+				</select><p>
     		
     		<label>Title</label>
     			<input type="text" name="title" /><p>
@@ -67,28 +62,27 @@
     			<input type="text" name="description" /><p>
     		
     		<label>Priority</label>
-    			<select name="priority">
-        			<option value="1">Low</option>
-        			<option value="2">Middle</option>
-        			<option value="3">High</option>
-    			</select><p>
+				<select name="priority" class="form-control">
+    				<option value="0">-</option>
+    				<option th:each="priority:${priorityMap}" th:value="${priority.key}" th:text="${priority.value}"></option>
+				</select><p>
     		
     		<label>DueDate</label>
 				<input type="date" id="dueDate" name="dueDate" /><p>
 
 				<script>
-					// 今日の日付を取得
+					//今日の日付を取得
 					var today = new Date();
 	
-					// 年、月、日を取得
+					//年、月、日を取得
 					var year = today.getFullYear();
 					var month = (today.getMonth() + 1).toString().padStart(2, '0'); // 月は0から始まるため+1が必要
 					var day = today.getDate().toString().padStart(2, '0');
 	
-					// "YYYY-MM-DD" 形式の日付文字列を作成
+					//"YYYY-MM-DD" 形式の日付文字列を作成
 					var formattedDate = year + '-' + month + '-' + day;
 	
-					// input要素にデフォルト値として設定
+					//input要素にデフォルト値として設定
 					document.getElementById('dueDate').value = formattedDate;
 				</script>
 
@@ -119,20 +113,17 @@
 				
 				<td>
 					<span th:switch="${todoItem.category}">
-						<span th:case="1">Work</span>
-						<span th:case="2">Private</span>
-						<span th:case="3">Other</span>
+						<span th:each="category:${categoryMap}" th:case="${category.key}" th:text="${category.value}"></span>
 					</span>
 				</td>
 				
                 <td th:text="${todoItem.title}"></td>
+                
                 <td th:text="${todoItem.description}"></td>
                 
                 <td>
 					<span th:switch="${todoItem.priority}">
-						<span th:case="1">Low</span>
-						<span th:case="2">Middle</span>
-						<span th:case="3">High</span>
+						<span th:each="priority:${priorityMap}" th:case="${priority.key}" th:text="${priority.value}"></span>
 					</span>
 				</td>
 				
