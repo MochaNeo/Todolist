@@ -16,30 +16,36 @@ public class TodoItemServiceAddValidator {
 	    Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
 	    
 	    
-	    String[] ngWords = {"", " ", "　"}; // NGワードを配列で定義
+	    
 	    String titleNullError = "タイトルを入力してください";
 	    String titleBlankError = "タイトルに空白が含まれています";
+	    String[] ngWord = {"宿題","勉強"};
+	    String ngWordError = "NGワードに設定されている文字が含まれます。";
 	    String dueDateError = "期日が昨日以前の日付です。有効な日付を設定してください";
 	    
+	    String errorMessage = "";
 	    
 	    
-	    for (String ngWord : ngWords) {
-	    	if (title.equals("")) {
-	    		return titleNullError;
-	    	}
-	    	if (title.contains(" ")) {
-	    		return titleBlankError;
-	    	}
-	    	if (title.contains("　")) {
-	    		return titleBlankError;
-	    	}
-	    	if (title.trim().toLowerCase().contains(ngWord)) {
-	    		return "NGワード「" + ngWord + "」は設定できません";
-	        }
-	    }
-	    if (dueDate.before(yesterday)) {
-	        return dueDateError;
-	    }
-	    return null;
+	    if (title.equals("")) {
+			errorMessage += titleNullError + "\n";
+			
+		} else if (title.contains(" ")) {
+		    errorMessage += titleBlankError + "\n";
+		    
+		} else if (title.contains("　")) {
+			errorMessage += titleBlankError + "\n";
+		
+		}
+	    for (String ngWords : ngWord) {
+			
+			if (title.trim().toLowerCase().contains(ngWords)) {
+				errorMessage += ngWordError + "\n";
+				break;
+			}
+		}
+		if (dueDate.before(yesterday)) {
+			errorMessage += dueDateError + "\n";
+		}
+		return errorMessage.isEmpty() ? null : errorMessage;
 	}
 }

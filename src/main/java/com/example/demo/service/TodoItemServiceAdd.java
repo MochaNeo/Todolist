@@ -31,7 +31,6 @@ public class TodoItemServiceAdd {
         return null;
     }
     
-    
     //getTodoItemsでisDoneの内容を降順で表示する
     public List<TodoItem> getTodoItems(boolean isDone) {
     	return repository.findByDoneOrderByPriorityDesc(isDone);

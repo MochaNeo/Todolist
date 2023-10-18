@@ -16,16 +16,16 @@ public class TodoItemServiceStatus {
 	TodoItemRepository repository;
 	
 	//todoステータスの変更
-	public void updateDoneStatus(long id, boolean done) {
+	@Transactional
+	public void updateStatus(long id, boolean done) {
 	    TodoItem item = repository.findById(id).get();
 	    item.setDone(done);
 	    repository.save(item);
 	}
-
+	
     //todoの削除
     @Transactional
 	public void deleteTodo(long id) {
-    	TodoItem item = repository.findById(id).get();
-    	repository.delete(item);
+    	repository.deleteById(id);
     }
 }

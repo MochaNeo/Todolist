@@ -41,7 +41,21 @@ public class HomeController {
     //デフォルトのページ
     @GetMapping("/")
     public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done, Model model) {
-        todoItemForm.setTodoItems(this.repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
+        todoItemForm.setTodoItems(repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
+        model.addAttribute("todoItemForm", todoItemForm);
+        model.addAttribute("categoryMap", TodoItemServiceSearch.getCategory());
+        model.addAttribute("priorityMap", TodoItemServiceSearch.getPriority());
+        return "index";
+    }
+    
+    
+    // todoを検索する
+    @PostMapping("/search")
+    public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
+        final List<TodoItem> searchResult = todoItemServiceSearch.search(todoItemForm.getTitle(),
+        															todoItemForm.getCategory(),
+        															todoItemForm.getPriority());
+        todoItemForm.setTodoItems(searchResult); // 検索結果をセット
         model.addAttribute("todoItemForm", todoItemForm);
         model.addAttribute("categoryMap", TodoItemServiceSearch.getCategory());
         model.addAttribute("priorityMap", TodoItemServiceSearch.getPriority());
@@ -50,24 +64,23 @@ public class HomeController {
     
     
     //アイテムを完了にする
-    @PostMapping(value = "/done")
+    @PostMapping("/done")
     public String done(@RequestParam("id") long id) {
-        todoItemServiceStatus.updateDoneStatus(id, true);
+        todoItemServiceStatus.updateStatus(id, true);
         return "redirect:/?done=false";
     }
     
     
     //アイテムを未完了にする
-    @PostMapping(value = "/restore")
+    @PostMapping("/restore")
     public String restore(@RequestParam("id") long id) {
-        todoItemServiceStatus.updateDoneStatus(id, false);
+        todoItemServiceStatus.updateStatus(id, false);
         return "redirect:/?done=true";
     }
     
     
-    
     // todoを追加する
-    @PostMapping(value = "/new")
+    @PostMapping("/new")
     public String newItem(@ModelAttribute TodoItemForm todoItemForm, TodoItem item, Model model) {
         String result = todoItemServiceAdd.createNewTodoItem(item, todoItemForm.isDone());
         if (result != null) {
@@ -82,24 +95,9 @@ public class HomeController {
     
     
     //todoを削除する
-    @PostMapping(value = "/delete")
+    @PostMapping("/delete")
     public String delete(@RequestParam("id") long id) {
     	todoItemServiceStatus.deleteTodo(id);
-        return "redirect:/";
-    }
-    
-    
-    // todoを検索する
-    @PostMapping(value = "/search")
-    public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
-        List<TodoItem> searchResult = todoItemServiceSearch.search(todoItemForm.getTitle(),
-        															todoItemForm.getCategory(),
-        															todoItemForm.getPriority(),
-        															todoItemForm.isDone());
-        todoItemForm.setTodoItems(searchResult); // 検索結果をセット
-        model.addAttribute("todoItemForm", todoItemForm);
-        model.addAttribute("categoryMap", TodoItemServiceSearch.getCategory());
-        model.addAttribute("priorityMap", TodoItemServiceSearch.getPriority());
-        return "index";
+        return "redirect:/?done=true";
     }
 }
