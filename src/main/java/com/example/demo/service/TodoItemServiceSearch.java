@@ -12,6 +12,7 @@ import com.example.demo.repository.TodoItemRepository;
 
 import jakarta.persistence.EntityManager;
 
+
 @Service
 public class TodoItemServiceSearch {
 
@@ -20,29 +21,46 @@ public class TodoItemServiceSearch {
     @Autowired
     EntityManager entityManager;
     
+    private static final Map<Integer, String> category = new HashMap<Integer, String>() {{
+    	put(1, "work");
+    	put(2, "private");
+    	put(3, "other");
+    }};
     
-    //categoryの項目の管理
+    private static final Map<Integer, String> priority = new HashMap<Integer, String>() {{
+    	put(1, "Low");
+    	put(2, "Middle");
+    	put(3, "High");
+    }};
+    
+    private static final Map<String, Object> condition = new HashMap<String, Object>() {{
+    	put("title", "");
+    	put("category", 0);
+    	put("priority", 0);
+    }};
+    
     public static Map<Integer, String> getCategory() {
-        Map<Integer, String> category = new HashMap<Integer, String>();
-        category.put(1, "work");
-        category.put(2, "private");
-        category.put(3, "other");
-        return category;
-    }
-    //priorityの項目の管理
-    public static Map<Integer, String> getPriority() {
-        Map<Integer, String> priority = new HashMap<Integer, String>();
-        priority.put(1, "Low");
-        priority.put(2, "Middle");
-        priority.put(3, "High");
-        return priority;
+    	return category;
     }
     
+    public static Map<Integer, String> getPriority() {
+    	return priority;
+    }
+    
+    public static Map<String, Object> getCondition(){
+    	return condition;
+    }
     
     //postの入力値の有無
-    public List<TodoItem> search(String title, int category, int priority) {
-        // TodoItemRepositoryのsearchItemsメソッドを呼び出し
-        return repository.searchItems(title, category, priority);
+	public List<TodoItem> search(String title, int category, int priority) {
+    	condition.put("title", title);
+    	condition.put("category", category);
+    	condition.put("priority", priority);
+    	
+    	
+    	//TodoItemRepositoryのsearchItemsメソッドを呼び出し
+    	//condition配列の各要素を取り出しsearchItemsに代入
+    	
+        return repository.searchItems((String)condition.get("title"), (int)condition.get("category"), (int)condition.get("priority"));
     }
-
 }

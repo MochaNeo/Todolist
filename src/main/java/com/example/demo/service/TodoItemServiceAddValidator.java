@@ -11,18 +11,15 @@ public class TodoItemServiceAddValidator {
 	
 	//追加するtodoのバリデーション
 	public String validateAddTodoItem(TodoItem item) {
-	    String title = item.getTitle();
-	    Date dueDate = item.getDueDate();
-	    Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+	    final String title = item.getTitle();
+	    final Date dueDate = item.getDueDate();
+	    final Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
 	    
-	    
-	    
-	    String titleNullError = "タイトルを入力してください";
-	    String titleBlankError = "タイトルに空白が含まれています";
-	    String[] ngWord = {"宿題","勉強"};
-	    String ngWordError = "NGワードに設定されている文字が含まれます。";
-	    String dueDateError = "期日が昨日以前の日付です。有効な日付を設定してください";
-	    
+	    final String titleNullError = "タイトルを入力してください";
+	    final String titleBlankError = "タイトルに空白が含まれています";
+	    final String[] ngWord = {};
+	    final String ngWordError = "NGワードに設定されている文字が含まれます。";
+	    final String dueDateError = "期日が昨日以前の日付です。有効な日付を設定してください";
 	    String errorMessage = "";
 	    
 	    

@@ -13,8 +13,10 @@ import com.example.demo.entity.TodoItem;
 //JpaRepositoryクラスを継承してentity名と主キーの型を入れる
 public interface TodoItemRepository extends JpaRepository<TodoItem, Long> {
 	
+	
 	//優先度の降順で完了・未完了のタスクを返す
     public List<TodoItem> findByDoneOrderByPriorityDesc(boolean done);
+    
     
     // JPQLを使用してカスタムのクエリメソッドを定義
     @Query("SELECT b FROM TodoItem b WHERE " +

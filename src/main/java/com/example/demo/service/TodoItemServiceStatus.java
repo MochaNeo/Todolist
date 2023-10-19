@@ -11,7 +11,6 @@ import jakarta.transaction.Transactional;
 //テーブルの更新
 @Service
 public class TodoItemServiceStatus {
-	
 	@Autowired
 	TodoItemRepository repository;
 	
@@ -22,7 +21,6 @@ public class TodoItemServiceStatus {
 	    item.setDone(done);
 	    repository.save(item);
 	}
-	
     //todoの削除
     @Transactional
 	public void deleteTodo(long id) {

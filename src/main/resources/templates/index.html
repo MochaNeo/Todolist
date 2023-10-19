@@ -16,7 +16,7 @@
     
     
     
-    	<form th:if="${!todoItemForm.done}" method="post" th:action="@{/search}" th:object="${formModel}">
+    	<form method="post" th:action="@{/search}" th:object="${formModel}">
 			<h2>Search</h2>
 			<label>Title</label>
 				<input type="text" name="title"><p>
