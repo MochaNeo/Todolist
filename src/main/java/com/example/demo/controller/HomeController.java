@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import jakarta.persistence.PersistenceContext;
 
 //ViewとServiceの橋渡し的な役割。viewからのリクエストをserviceに送る。
 @Controller
+@SuppressWarnings("unchecked")
 public class HomeController {
 	
     @Autowired
@@ -40,6 +43,7 @@ public class HomeController {
     @Autowired
     private TodoItemServiceAddValidator validator;
     
+    private Map<String, Object> searchConditions = new HashMap<>();
     
     //デフォルトのページ
     @GetMapping("/")
@@ -50,13 +54,18 @@ public class HomeController {
     }
     
     // todoを検索する
-    @PostMapping("/search")
+	@PostMapping("/search")
     public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
-        List<TodoItem> searchResult = todoItemServiceSearch.search(todoItemForm.getTitle(),todoItemForm.getCategory(),todoItemForm.getPriority());
+        // 検索条件を詰め込むためのMapを作成
+			searchConditions.put("title", todoItemForm.getTitle());
+			searchConditions.put("category", todoItemForm.getCategory());
+			searchConditions.put("priority", todoItemForm.getPriority());
+		List<TodoItem> searchResult = todoItemServiceSearch.search(searchConditions);
         todoItemForm.setTodoItems(searchResult); // 検索結果をセット
         model.addAttribute("todoItemForm", todoItemForm);
         return "index";
-    }
+	}
+	
     
     //アイテムを完了にする
     @PostMapping("/done")
@@ -87,5 +96,12 @@ public class HomeController {
     public String delete(@RequestParam("id") long id) {
     	todoItemServiceStatus.deleteTodo(id);
         return "redirect:/?done=true";
+    }
+    
+    //完了済みのtodoをすべて削除する
+    @PostMapping("/allDelete")
+    public String allDelete() {
+    	todoItemServiceStatus.allDeleteTodo();
+    	return "redirect:/?done=true";
     }
 }

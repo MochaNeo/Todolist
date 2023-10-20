@@ -33,7 +33,7 @@ public class TodoItemServiceSearch {
     	put(3, "High");
     }};
     
-    private static final Map<String, Object> condition = new HashMap<String, Object>() {{
+    private static Map<String, Object> condition = new HashMap<String, Object>() {{
     	put("title", "");
     	put("category", 0);
     	put("priority", 0);
@@ -47,20 +47,19 @@ public class TodoItemServiceSearch {
     	return priority;
     }
     
-    public static Map<String, Object> getCondition(){
-    	return condition;
-    }
     
     //postの入力値の有無
-	public List<TodoItem> search(String title, int category, int priority) {
-    	condition.put("title", title);
-    	condition.put("category", category);
-    	condition.put("priority", priority);
-    	
-    	
-    	//TodoItemRepositoryのsearchItemsメソッドを呼び出し
-    	//condition配列の各要素を取り出しsearchItemsに代入
-    	
-        return repository.searchItems((String)condition.get("title"), (int)condition.get("category"), (int)condition.get("priority"));
+    @SuppressWarnings("unchecked")
+	public List<TodoItem> search(Map<String, Object> ...org) {
+        // 以下のループで、条件が設定されている場合にconditionマップに追加する
+        for (int i = 0; i < org.length; i++) {
+        	String key = org[i].keySet().iterator().next();
+        	// keyを使用して値をconditionに追加
+        	condition.put(key, org[i].get(key));
+        }
+        // TodoItemRepositoryのsearchItemsメソッドを呼び出し、conditionの値を渡す
+        return repository.searchItems((String) condition.get("title"),
+        								(int) condition.get("category"),
+        								(int) condition.get("priority"));
     }
 }

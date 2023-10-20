@@ -16,7 +16,7 @@
     
     
     
-    	<form method="post" th:action="@{/search}" th:object="${formModel}">
+    	<form th:unless="${todoItemForm.done}" method="post" th:action="@{/search}" th:object="${formModel}">
 			<h2>Search</h2>
 			<label>Title</label>
 				<input type="text" name="title"><p>
@@ -145,5 +145,10 @@
             </tr>
         </tbody>
     </table>
+    
+    <form method="post" th:action="@{/allDelete}" th:if="${todoItemForm.done}">
+		<input type="submit" value="allDone Delete"/>
+	</form>
+    
 </body>
 </html>

@@ -13,7 +13,6 @@ import com.example.demo.entity.TodoItem;
 //JpaRepositoryクラスを継承してentity名と主キーの型を入れる
 public interface TodoItemRepository extends JpaRepository<TodoItem, Long> {
 	
-	
 	//優先度の降順で完了・未完了のタスクを返す
     public List<TodoItem> findByDoneOrderByPriorityDesc(boolean done);
     
@@ -25,10 +24,13 @@ public interface TodoItemRepository extends JpaRepository<TodoItem, Long> {
            "AND (:priority = 0 OR b.priority = :priority) " +
            "AND b.done = false " +
            "ORDER BY b.priority DESC")
-    List<TodoItem> searchItems(
+    public List<TodoItem> searchItems(
         @Param("title") String title,
         @Param("category") int category,
         @Param("priority") int priority
     );
-
+    
+    
+    //doneがtrueのレコードをすべて取得
+	public List<TodoItem> findByDoneTrue();
 }
