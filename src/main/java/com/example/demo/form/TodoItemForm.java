@@ -15,6 +15,7 @@ public class TodoItemForm {
     private String errorMessage;
     private List<TodoItem> todoItems;
     private String title;
-    private int category;
-    private int priority;
+    private String detail = "";
+    private int category = 0;
+    private int priority = 0;
 }

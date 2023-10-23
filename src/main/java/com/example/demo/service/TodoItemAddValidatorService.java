@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.TodoItem;
 
 @Service
-public class TodoItemServiceAddValidator {
+public class TodoItemAddValidatorService {
 	
 	//追加するtodoのバリデーション
 	public String validateAddTodoItem(TodoItem item) {
@@ -25,16 +25,12 @@ public class TodoItemServiceAddValidator {
 	    
 	    if (title.equals("")) {
 			errorMessage += titleNullError + "\n";
-			
 		} else if (title.contains(" ")) {
 		    errorMessage += titleBlankError + "\n";
-		    
 		} else if (title.contains("　")) {
 			errorMessage += titleBlankError + "\n";
-		
 		}
 	    for (String ngWords : ngWord) {
-			
 			if (title.trim().toLowerCase().contains(ngWords)) {
 				errorMessage += ngWordError + "\n";
 				break;

@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.TodoItem;
+import com.example.demo.form.AddTodoForm;
+import com.example.demo.form.SearchForm;
 import com.example.demo.form.TodoItemForm;
 import com.example.demo.repository.TodoItemRepository;
-import com.example.demo.service.TodoItemServiceAdd;
-import com.example.demo.service.TodoItemServiceAddValidator;
-import com.example.demo.service.TodoItemServiceSearch;
-import com.example.demo.service.TodoItemServiceStatus;
+import com.example.demo.service.TodoItemAddService;
+import com.example.demo.service.TodoItemAddValidatorService;
+import com.example.demo.service.TodoItemSearchService;
+import com.example.demo.service.TodoItemStatusService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -35,73 +37,75 @@ public class HomeController {
     EntityManager entityManager;
     //TodoItemService〇〇クラスのインスタンスをDIする
     @Autowired
-    private TodoItemServiceStatus todoItemServiceStatus;
+    private TodoItemStatusService status;
     @Autowired
-    private TodoItemServiceAdd todoItemServiceAdd;
+    private TodoItemAddService add;
     @Autowired
-    private TodoItemServiceSearch todoItemServiceSearch;
+    private TodoItemSearchService search;
     @Autowired
-    private TodoItemServiceAddValidator validator;
+    private TodoItemAddValidatorService validator;
     
-    private Map<String, Object> searchConditions = new HashMap<>();
+    public Map<String, Object> searchConditions = new HashMap<>();
     
     //デフォルトのページ
     @GetMapping("/")
-    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done, Model model) {
+    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done) {
         todoItemForm.setTodoItems(repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
-        model.addAttribute("todoItemForm", todoItemForm);
         return "index";
     }
     
     // todoを検索する
-	@PostMapping("/search")
-    public String select(@ModelAttribute("formModel") TodoItemForm todoItemForm, Model model) {
+ // todoを検索する
+    @PostMapping("/search")
+    public String select(@ModelAttribute("searchForm") SearchForm searchForm, Model model) {
         // 検索条件を詰め込むためのMapを作成
-			searchConditions.put("title", todoItemForm.getTitle());
-			searchConditions.put("category", todoItemForm.getCategory());
-			searchConditions.put("priority", todoItemForm.getPriority());
-		List<TodoItem> searchResult = todoItemServiceSearch.search(searchConditions);
-        todoItemForm.setTodoItems(searchResult); // 検索結果をセット
-        model.addAttribute("todoItemForm", todoItemForm);
+        searchConditions.put("title", searchForm.getTitle());
+        searchConditions.put("category", searchForm.getCategory());
+        searchConditions.put("priority", searchForm.getPriority());
+        List<TodoItem> searchResult = search.search(searchConditions);
+        // 検索結果をビューに渡す
+        model.addAttribute("searchForm", searchForm);
+        model.addAttribute("searchResult", searchResult);
         return "index";
-	}
-	
+    }
+
+    // todoを追加する
+    @PostMapping("/new")
+    public String newItem(@ModelAttribute("addTodoForm") AddTodoForm addTodoForm, Model model) {
+        String ValidationResult = validator.validateAddTodoItem(addTodoForm);
+        String result = add.createNewTodoItem(addTodoForm, ValidationResult);
+        if (result != null) {
+            return "index";
+        }
+        return "redirect:/";
+    }
+
     
     //アイテムを完了にする
     @PostMapping("/done")
     public String done(@RequestParam("id") long id) {
-        todoItemServiceStatus.updateStatus(id, true);
+        status.updateStatus(id, true);
         return "redirect:/?done=false";
     }
     
     //アイテムを未完了にする
     @PostMapping("/restore")
     public String restore(@RequestParam("id") long id) {
-        todoItemServiceStatus.updateStatus(id, false);
+        status.updateStatus(id, false);
         return "redirect:/?done=true";
-    }
-    
-    // todoを追加する
-    @PostMapping("/new")
-    public String newItem(@ModelAttribute TodoItemForm todoItemForm, TodoItem item) {
-    	String ValidationResult = validator.validateAddTodoItem(item);
-        String result = todoItemServiceAdd.createNewTodoItem(todoItemForm, item, ValidationResult);
-        if (result != null) {
-        	return "index";
-        }	return "redirect:/";
     }
     
     //todoを削除する
     @PostMapping("/delete")
     public String delete(@RequestParam("id") long id) {
-    	todoItemServiceStatus.deleteTodo(id);
+    	status.deleteTodo(id);
         return "redirect:/?done=true";
     }
     
     //完了済みのtodoをすべて削除する
     @PostMapping("/allDelete")
     public String allDelete() {
-    	todoItemServiceStatus.allDeleteTodo();
+    	status.allDeleteTodo();
     	return "redirect:/?done=true";
     }
 }

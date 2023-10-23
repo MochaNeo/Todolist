@@ -29,8 +29,4 @@ public interface TodoItemRepository extends JpaRepository<TodoItem, Long> {
         @Param("category") int category,
         @Param("priority") int priority
     );
-    
-    
-    //doneがtrueのレコードをすべて取得
-	public List<TodoItem> findByDoneTrue();
 }

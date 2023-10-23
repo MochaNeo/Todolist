@@ -10,21 +10,21 @@ import com.example.demo.repository.TodoItemRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-public class TodoItemServiceAdd {
+public class TodoItemAddService {
     @Autowired
     TodoItemRepository repository;
-    @Transactional
     
     //todoを追加
+    @Transactional
     public String createNewTodoItem(TodoItemForm todoItemForm, TodoItem item, String validationResult) {
         if (validationResult != null) {
+        	//バリデーションにてエラーが発生した場合の処理
         	todoItemForm.setErrorMessage(validationResult);
         	todoItemForm.setTodoItems(repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
             return validationResult;
-        }
-        // バリデーションに合格した場合の処理
-        item.setDone(false);
-        repository.save(item);
-        return null;
+        }	// バリデーションに合格した場合の処理
+        	item.setDone(false);
+            repository.save(item);
+            return null;
     }
 }
