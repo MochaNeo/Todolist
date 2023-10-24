@@ -38,6 +38,7 @@ public class TodoItemSearchService {
     	put("title", "");
     	put("category", 0);
     	put("priority", 0);
+    	put("done", false);
     }};
 
     public static Map<Integer, String> getCategory() {
@@ -59,6 +60,7 @@ public class TodoItemSearchService {
         // TodoItemRepositoryのsearchItemsメソッドを呼び出し、conditionの値を渡す
         return repository.searchItems((String) condition.get("title"),
         								(int) condition.get("category"),
-        								(int) condition.get("priority"));
+        								(int) condition.get("priority"),
+        								(boolean) condition.get("done"));
     }
 }

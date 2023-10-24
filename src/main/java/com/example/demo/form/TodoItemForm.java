@@ -14,8 +14,11 @@ public class TodoItemForm {
     private boolean isDone;
     private String errorMessage;
     private List<TodoItem> todoItems;
-    private String title;
-    private String detail = "";
+    private String title = "";
+    private String description = "";
     private int category = 0;
     private int priority = 0;
+    private String searchTitle = "";
+    private int searchCategory = 0;
+    private int searchPriority = 0;
 }

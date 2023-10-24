@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.TodoItem;
-import com.example.demo.form.AddTodoForm;
-import com.example.demo.form.SearchForm;
 import com.example.demo.form.TodoItemForm;
 import com.example.demo.repository.TodoItemRepository;
 import com.example.demo.service.TodoItemAddService;
@@ -47,6 +45,7 @@ public class HomeController {
     
     public Map<String, Object> searchConditions = new HashMap<>();
     
+    
     //デフォルトのページ
     @GetMapping("/")
     public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done) {
@@ -54,32 +53,27 @@ public class HomeController {
         return "index";
     }
     
-    // todoを検索する
- // todoを検索する
-    @PostMapping("/search")
-    public String select(@ModelAttribute("searchForm") SearchForm searchForm, Model model) {
-        // 検索条件を詰め込むためのMapを作成
-        searchConditions.put("title", searchForm.getTitle());
-        searchConditions.put("category", searchForm.getCategory());
-        searchConditions.put("priority", searchForm.getPriority());
-        List<TodoItem> searchResult = search.search(searchConditions);
-        // 検索結果をビューに渡す
-        model.addAttribute("searchForm", searchForm);
-        model.addAttribute("searchResult", searchResult);
+    //todoを検索する
+    @PostMapping("/searchTodo")
+    public String searchTodo(@ModelAttribute TodoItemForm todoItemForm, Model model) {
+    		searchConditions.put("title", todoItemForm.getSearchTitle());
+    		searchConditions.put("category", todoItemForm.getSearchCategory());
+    		searchConditions.put("priority", todoItemForm.getSearchPriority());
+    	List<TodoItem> searchResult = search.search(searchConditions);
+    	todoItemForm.setTodoItems(searchResult);
         return "index";
     }
-
+    
     // todoを追加する
     @PostMapping("/new")
-    public String newItem(@ModelAttribute("addTodoForm") AddTodoForm addTodoForm, Model model) {
-        String ValidationResult = validator.validateAddTodoItem(addTodoForm);
-        String result = add.createNewTodoItem(addTodoForm, ValidationResult);
+    public String newItem(@ModelAttribute TodoItemForm todoItemForm, TodoItem item) {
+        String ValidationResult = validator.validateAddTodoItem(item);
+        String result = add.createNewTodoItem(todoItemForm, item, ValidationResult);
         if (result != null) {
-            return "index";
+        	return "index";
         }
         return "redirect:/";
     }
-
     
     //アイテムを完了にする
     @PostMapping("/done")
