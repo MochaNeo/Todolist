@@ -57,10 +57,7 @@ public class TodoItemSearchService {
                 condition.put(entry.getKey(), entry.getValue());
             }
         }
+        return repository.searchItems(condition);
         // TodoItemRepositoryのsearchItemsメソッドを呼び出し、conditionの値を渡す
-        return repository.searchItems((String) condition.get("title"),
-        								(int) condition.get("category"),
-        								(int) condition.get("priority"),
-        								(boolean) condition.get("done"));
     }
 }
