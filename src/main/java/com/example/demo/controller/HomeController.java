@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.TodoItem;
 import com.example.demo.form.TodoItemForm;
-import com.example.demo.repository.TodoItemRepository;
-import com.example.demo.service.TodoItemAddService;
-import com.example.demo.service.TodoItemAddValidatorService;
-import com.example.demo.service.TodoItemSearchService;
-import com.example.demo.service.TodoItemStatusService;
+import com.example.demo.repository.TodoRepository;
+import com.example.demo.service.TodoAddService;
+import com.example.demo.service.TodoAddValidatorService;
+import com.example.demo.service.TodoSearchService;
+import com.example.demo.service.TodoStatusService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -30,18 +30,18 @@ import jakarta.persistence.PersistenceContext;
 public class HomeController {
 	
     @Autowired
-    TodoItemRepository repository;
+    TodoRepository repository;
     @PersistenceContext
     EntityManager entityManager;
     //TodoItemService〇〇クラスのインスタンスをDIする
     @Autowired
-    private TodoItemStatusService status;
+    private TodoStatusService status;
     @Autowired
-    private TodoItemAddService add;
+    private TodoAddService add;
     @Autowired
-    private TodoItemSearchService search;
+    private TodoSearchService search;
     @Autowired
-    private TodoItemAddValidatorService validator;
+    private TodoAddValidatorService validator;
     
     public Map<String, Object> searchConditions = new HashMap<>();
     

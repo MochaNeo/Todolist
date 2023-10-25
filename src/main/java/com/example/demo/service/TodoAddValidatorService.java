@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.TodoItem;
 
 @Service
-public class TodoItemAddValidatorService {
+public class TodoAddValidatorService {
 	
 	//追加するtodoのバリデーション
 	public String validateAddTodoItem(TodoItem item) {

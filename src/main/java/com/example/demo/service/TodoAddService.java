@@ -5,14 +5,14 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.TodoItem;
 import com.example.demo.form.TodoItemForm;
-import com.example.demo.repository.TodoItemRepository;
+import com.example.demo.repository.TodoRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
-public class TodoItemAddService {
+public class TodoAddService {
     @Autowired
-    TodoItemRepository repository;
+    TodoRepository repository;
     
     //todoを追加
     @Transactional

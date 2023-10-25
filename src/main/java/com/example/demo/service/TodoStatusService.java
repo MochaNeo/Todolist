@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.TodoItem;
-import com.example.demo.repository.TodoItemRepository;
+import com.example.demo.repository.TodoRepository;
 
 import jakarta.transaction.Transactional;
 
 //テーブルの更新
 @Service
-public class TodoItemStatusService {
+public class TodoStatusService {
 	@Autowired
-	TodoItemRepository repository;
+	TodoRepository repository;
 	
 	//todoステータスの変更
 	@Transactional

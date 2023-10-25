@@ -8,19 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.TodoItem;
-import com.example.demo.repository.TodoItemRepository;
+import com.example.demo.form.TodoSearchCriteria;
+import com.example.demo.repository.TodoRepository;
 
 import jakarta.persistence.EntityManager;
 
-
 @Service
-@SuppressWarnings("unchecked")
-public class TodoItemSearchService {
+public class TodoSearchService {
 
     @Autowired
-    TodoItemRepository repository;
+    TodoRepository repository;
     @Autowired
     EntityManager entityManager;
+    @Autowired
+    TodoSearchCriteria criteria;
 
     private static final Map<Integer, String> category = new HashMap<Integer, String>() {{
     	put(1, "work");
@@ -49,7 +50,8 @@ public class TodoItemSearchService {
     	return priority;
     }
     
-    public List<TodoItem> search(Map<String, Object>... org) {
+	@SuppressWarnings("unchecked")
+	public List<TodoItem> search(Map<String, Object>... org) {
         // 以下のループで、条件が設定されている場合にconditionマップに追加する
         for (int i = 0; i < org.length; i++) {
             for (Map.Entry<String, Object> entry : org[i].entrySet()) {
@@ -57,7 +59,10 @@ public class TodoItemSearchService {
                 condition.put(entry.getKey(), entry.getValue());
             }
         }
-        return repository.searchItems(condition);
-        // TodoItemRepositoryのsearchItemsメソッドを呼び出し、conditionの値を渡す
+        if (org.equals(null)) {
+        	return repository.findByDoneOrderByPriorityDesc(false);
+        }
+        criteria.setCriteria(condition);
+        return repository.search(criteria);
     }
 }
