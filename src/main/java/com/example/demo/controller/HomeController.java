@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,9 +20,6 @@ import com.example.demo.service.TodoAddValidatorService;
 import com.example.demo.service.TodoSearchService;
 import com.example.demo.service.TodoStatusService;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 //ViewとServiceの橋渡し的な役割。viewからのリクエストをserviceに送る。
 @Controller
 @SuppressWarnings("unchecked")
@@ -31,19 +27,24 @@ public class HomeController {
 	
     @Autowired
     TodoRepository repository;
-    @PersistenceContext
-    EntityManager entityManager;
+    
     //TodoItemService〇〇クラスのインスタンスをDIする
     @Autowired
     private TodoStatusService status;
+    
     @Autowired
     private TodoAddService add;
+    
     @Autowired
     private TodoSearchService search;
+    
     @Autowired
     private TodoAddValidatorService validator;
     
+    
     public Map<String, Object> searchConditions = new HashMap<>();
+    
+    
     
     
     //デフォルトのページ
@@ -53,9 +54,11 @@ public class HomeController {
         return "index";
     }
     
+    
+    
     //todoを検索する
     @PostMapping("/searchTodo")
-    public String searchTodo(@ModelAttribute TodoItemForm todoItemForm, Model model) {
+    public String searchTodo(@ModelAttribute TodoItemForm todoItemForm) {
     		searchConditions.put("title", todoItemForm.getSearchTitle());
     		searchConditions.put("category", todoItemForm.getSearchCategory());
     		searchConditions.put("priority", todoItemForm.getSearchPriority());
@@ -63,6 +66,8 @@ public class HomeController {
     	todoItemForm.setTodoItems(searchResult);
         return "index";
     }
+    
+    
     
     // todoを追加する
     @PostMapping("/new")
@@ -75,12 +80,16 @@ public class HomeController {
         return "redirect:/";
     }
     
+    
+    
     //アイテムを完了にする
     @PostMapping("/done")
     public String done(@RequestParam("id") long id) {
         status.updateStatus(id, true);
         return "redirect:/?done=false";
     }
+    
+    
     
     //アイテムを未完了にする
     @PostMapping("/restore")
@@ -89,12 +98,16 @@ public class HomeController {
         return "redirect:/?done=true";
     }
     
+    
+    
     //todoを削除する
     @PostMapping("/delete")
     public String delete(@RequestParam("id") long id) {
     	status.deleteTodo(id);
         return "redirect:/?done=true";
     }
+    
+    
     
     //完了済みのtodoをすべて削除する
     @PostMapping("/allDelete")

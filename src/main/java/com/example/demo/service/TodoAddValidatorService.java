@@ -9,6 +9,7 @@ import com.example.demo.entity.TodoItem;
 @Service
 public class TodoAddValidatorService {
 	
+	
 	//追加するtodoのバリデーション
 	public String validateAddTodoItem(TodoItem item) {
 	    final String title = item.getTitle();
@@ -23,13 +24,19 @@ public class TodoAddValidatorService {
 	    String errorMessage = "";
 	    
 	    
+	    
 	    if (title.equals("")) {
 			errorMessage += titleNullError + "\n";
+			
 		} else if (title.contains(" ")) {
 		    errorMessage += titleBlankError + "\n";
+		    
 		} else if (title.contains("　")) {
 			errorMessage += titleBlankError + "\n";
+			
 		}
+	    
+	    
 	    for (String ngWords : ngWord) {
 			if (title.trim().toLowerCase().contains(ngWords)) {
 				errorMessage += ngWordError + "\n";
@@ -39,6 +46,7 @@ public class TodoAddValidatorService {
 		if (dueDate.before(yesterday)) {
 			errorMessage += dueDateError + "\n";
 		}
+		
 		return errorMessage.isEmpty() ? null : errorMessage;
 	}
 }

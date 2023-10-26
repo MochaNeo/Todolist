@@ -13,11 +13,11 @@ public class HomeControllerAdvice {
 
     @ModelAttribute("categoryMap")
     public Map<Integer, String> getCategory() {
-        return TodoSearchService.getCategory();
+        return TodoSearchService.getCategoryList();
     }
 
     @ModelAttribute("priorityMap")
     public Map<Integer, String> getPriority() {
-        return TodoSearchService.getPriority();
+        return TodoSearchService.getPriorityList();
     }
 }

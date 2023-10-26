@@ -11,8 +11,11 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class TodoAddService {
+	
+	
     @Autowired
     TodoRepository repository;
+    
     
     //todoを追加
     @Transactional
