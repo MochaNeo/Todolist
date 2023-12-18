@@ -20,15 +20,13 @@ import com.example.demo.service.TodoAddValidatorService;
 import com.example.demo.service.TodoSearchService;
 import com.example.demo.service.TodoStatusService;
 
-//ViewとServiceの橋渡し的な役割。viewからのリクエストをserviceに送る。
 @Controller
 @SuppressWarnings("unchecked")
 public class HomeController {
-	
+//他クラスのDI
     @Autowired
     TodoRepository repository;
     
-    //TodoItemService〇〇クラスのインスタンスをDIする
     @Autowired
     private TodoStatusService status;
     
@@ -41,7 +39,7 @@ public class HomeController {
     @Autowired
     private TodoAddValidatorService validator;
     
-    
+//検索時の条件保存用MAP
     public Map<String, Object> searchConditions = new HashMap<>();
     
     
