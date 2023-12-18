@@ -23,7 +23,6 @@ public interface TodoRepository extends JpaRepository<TodoItem, Long> {
     public List<TodoItem> findByDoneOrderByPriorityDesc(boolean done);
     
     // JPQLを使用してカスタムのクエリメソッドを定義
-    //:#{#criteria.○○}でTodoSearchCriteriaのフィールドにアクセス
     //WHERE 0=0は真となり全件取得する
 
     @Query("SELECT b FROM TodoItem b WHERE " +
