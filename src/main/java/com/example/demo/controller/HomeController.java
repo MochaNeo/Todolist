@@ -45,10 +45,10 @@ public class HomeController {
     
     
     //デフォルトのページ
-    @GetMapping("/")
-    public String index(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done) {
+    @GetMapping("/hello")
+    public String hello(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done) {
         todoItemForm.setTodoItems(repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
-        return "index";
+        return "hello";
     }
     
     
@@ -61,7 +61,7 @@ public class HomeController {
     		searchConditions.put("priority", todoItemForm.getSearchPriority());
     	List<TodoItem> searchResult = search.search(searchConditions);
     	todoItemForm.setTodoItems(searchResult);
-        return "index";
+        return "hello";
     }
     
     
@@ -72,9 +72,9 @@ public class HomeController {
         String ValidationResult = validator.validateAddTodoItem(item);
         String result = add.createNewTodoItem(todoItemForm, item, ValidationResult);
         if (result != null) {
-        	return "index";
+        	return "hello";
         }
-        return "redirect:/";
+        return "redirect:/hello";
     }
     
     
@@ -83,7 +83,7 @@ public class HomeController {
     @PostMapping("/done")
     public String done(@RequestParam("id") long id) {
         status.updateStatus(id, true);
-        return "redirect:/?done=false";
+        return "redirect:/hello?done=false";
     }
     
     
@@ -92,7 +92,7 @@ public class HomeController {
     @PostMapping("/restore")
     public String restore(@RequestParam("id") long id) {
         status.updateStatus(id, false);
-        return "redirect:/?done=true";
+        return "redirect:/hello?done=true";
     }
     
     
@@ -101,7 +101,7 @@ public class HomeController {
     @PostMapping("/delete")
     public String delete(@RequestParam("id") long id) {
     	status.deleteTodo(id);
-        return "redirect:/?done=true";
+        return "redirect:/hello?done=true";
     }
     
     
@@ -110,6 +110,6 @@ public class HomeController {
     @PostMapping("/allDelete")
     public String allDelete() {
     	status.allDeleteTodo();
-    	return "redirect:/?done=true";
+    	return "redirect:/hello?done=true";
     }
 }
