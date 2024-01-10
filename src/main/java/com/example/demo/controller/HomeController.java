@@ -39,9 +39,8 @@ public class HomeController {
     @Autowired
     private TodoAddValidatorService validator;
     
-//検索時の条件保存用MAP
+    //検索時の条件保存用MAP
     public Map<String, Object> searchConditions = new HashMap<>();
-    
     
     
     

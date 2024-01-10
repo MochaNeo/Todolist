@@ -7,7 +7,6 @@ import com.example.demo.entity.TodoItem;
 import lombok.Getter;
 import lombok.Setter;
 
-//Thymeleafテンプレートのビューとコントローラーの間でデータを受け渡すのに使用される
 @Getter
 @Setter
 public class TodoItemForm {

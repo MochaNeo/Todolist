@@ -10,7 +10,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-//データベースの1レコードを1インスタンスと対応させるためのクラス
 @Entity
 @Table(name = "todoitems")
 @Getter

@@ -11,7 +11,7 @@ import com.example.demo.service.TodoSearchService;
 
 import jakarta.persistence.EntityManager;
 
-//データベースへアクセスするためのクラス
+//データベースへアクセスするのクラス
 //JpaRepositoryクラスを継承してentity名と主キーの型を入れる
 public interface TodoRepository extends JpaRepository<TodoItem, Long> {
 	public static final EntityManager entityManager = null;
