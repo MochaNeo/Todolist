@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.securingweb;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,7 +39,7 @@ public class WebSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            com.example.demo.UserEntity userEntity = demoMapper.getAccount(username);
+            UserEntity userEntity = demoMapper.getAccount(username);
                 return org.springframework.security.core.userdetails.User
                         .withUsername(userEntity.getUsername())
                         .password(userEntity.getHashedPassword())
