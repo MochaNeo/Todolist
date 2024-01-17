@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 import java.sql.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +20,7 @@ public class TodoItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)//自動的に番号を生成
     private Long id;//主キー
 	private int category;//仕事か、私生活か、その他か
+    @Column(nullable = false)
     private String title;//タイトル
     private String description;//詳細
     private int priority;//優先度

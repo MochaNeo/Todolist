@@ -107,11 +107,4 @@ public class TodoSearchService {
             e.printStackTrace();
         }
     }
-//	public void setCriteria(Map<String, Object> condition) {
-//	setTitle((String)condition.get("title"));
-//	setCategory((int)condition.get("category"));
-//	setPriority((int)condition.get("priority"));
-//	setDone((boolean)condition.get("done"));
-//	
-//}
 }

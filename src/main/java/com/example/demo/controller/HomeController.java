@@ -46,7 +46,7 @@ public class HomeController {
     
     //デフォルトのページ
     @GetMapping("/hello")
-    public String hello(@ModelAttribute TodoItemForm todoItemForm, @RequestParam("done") Optional<Boolean> done) {
+    public String hello(@ModelAttribute TodoItemForm todoItemForm) {
         todoItemForm.setTodoItems(repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
         return "hello";
     }

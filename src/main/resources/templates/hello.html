@@ -2,184 +2,209 @@
 <!--ログイン後のページ-->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>HelloWorld</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
-        <!-- Font Awesome icons (free version)-->
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    </head>
+      <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+        <title>TodoList</title>
+      </head>
 
     <body>
-
-
-        <h2 class="display-4 mb-4">ToDo App</h2>
-        <form th:action="@{/logout}" method="post">
-            <input class="btn btn-xl btn-primary btn-block text-uppercase" type="submit" value="Sign Out"/>
-        </form>
-        <p></p>
-        <button>
-            <a th:unless="${todoItemForm.done}" th:href="@{/hello?done=true}">Done Tasks</a>
-            <a th:if="${todoItemForm.done}" th:href="@{/hello?done=false}">Back</a>
-        </button>
-
-
-        <form th:unless="${todoItemForm.done}" method="post" th:action="@{/searchTodo}" th:object="${todoItemForm}">
-            <h2>Search</h2>
-
-            <label>Title</label>
-            <p></p>
-            <input type="text" name="searchTitle" th:field="*{searchTitle}">
-            <p></p>
-            <label>Category</label>
-            <select name="searchCategory" class="form-control" th:field="*{searchCategory}">
-                <option value="0">-</option>
-                <option th:each="category : ${categoryMap}" th:value="${category.key}" th:text="${category.value}"></option>
-            </select>
-            <p></p>
-            <label>Priority</label>
-            <select name="searchPriority" class="form-control" th:field="*{searchPriority}">
-                <option value="0">-</option>
-                <option th:each="priority : ${priorityMap}" th:value="${priority.key}" th:text="${priority.value}"></option>
-            </select>
-            <p></p>
-            <input type="submit" value="Search" />
-            <p></p>
-        </form>
-
-        <form th:unless="${todoItemForm.done}" method="post" th:action="@{/new}" th:object="${todoItemForm}">
-            <h3>Add ToDo</h3>
-            
-            <label>Title</label>
-            <p></p>
-            <input type="text" name="title" th:field="*{title}"/>
-            <p></p>
-            <label>Category</label>
-            <select name="category" class="form-control" th:field="*{category}">
-                <option th:each="category : ${categoryMap}" th:value="${category.key}" th:text="${category.value}"></option>
-            </select>
-            <p></p>
-            <label>description</label>
-            <p></p>
-            <input type="text" name="description" th:field="*{description}"/>
-            <p></p>
-            <label>Priority</label>
-            <select name="priority" class="form-control" th:field="*{priority}">
-                <option th:each="priority : ${priorityMap}" th:value="${priority.key}" th:text="${priority.value}"></option>
-            </select>
-            <p></p>
-            <label>Due Date</label>
-            <p></p>
-            <input type="date" name="dueDate" id="dueDate"/>
-
-            <script>
-                var today = new Date();
-                var year = today.getFullYear();
-                var month = (today.getMonth() + 1).toString().padStart(2, '0');
-                var day = today.getDate().toString().padStart(2, '0');
-                var formattedDate = year + '-' + month + '-' + day;
-                document.getElementById('dueDate').value = formattedDate;
-            </script>
-            <p></p>
-            <input type="submit" value="Add Task" />
-        </form>
-
-        <div th:if="${todoItemForm.errorMessage}" th:text="${todoItemForm.errorMessage}" class="error-message"></div>
-
-
-        <h3>ToDo List</h3>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Category</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Priority</th>
-                    <th>Create Date</th>
-                    <th>Due Date</th>
-                    <th>Done/Restore</th>
-                    <th th:if="${todoItemForm.done}">Delete</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr th:each="todoItem : ${todoItemForm.todoItems}">
-                    <td th:text="${categoryMap[todoItem.category]}" />
-                    <td th:text="${todoItem.title}" />
-                    <td th:text="${todoItem.description}" />
-                    <td th:text="${priorityMap[todoItem.priority]}" />
-                    <td th:text="${todoItem.createDate}" />
-                    <td th:text="${todoItem.dueDate}" />
-                    <td>
-                        <form th:unless="${todoItemForm.done}" method="post" th:action="@{/done}" th:object="${todoItem}">
-                            <input type="hidden" name="id" th:value="*{id}" />
-                            <input type="submit" value="Done" />
-                        </form>
-                        <form th:if="${todoItemForm.done}" method="post" th:action="@{/restore}" th:object="${todoItem}">
-                            <input type="hidden" name="id" th:value="*{id}" />
-                            <input type="submit" value="Restore" />
-                        </form>
-                    </td>
-                    <td>
-                        <form th:if="${todoItemForm.done}" method="post" th:action="@{/delete}" th:object="${todoItem}">
-                            <input type="hidden" name="id" th:value="*{id}" />
-                            <input type="submit" value="Delete" />
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <form th:if="${todoItemForm.done}" method="post" th:action="@{/allDelete}">
-            <input type="submit" value="All Done Delete" />
-        </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <!-- Footer-->
-        <footer class="footer py-4">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-4 text-lg-start">Copyright &copy; MochaNeo 2023</div>
-                    <div class="col-lg-4 my-3 my-lg-0">
-                        <a class="btn btn-dark btn-social mx-2" href="https://github.com/MochaNeo" aria-label="github"><i class="fab fa-github"></i></a>
-                    </div>
+        <!--タイトル・完了、未完了切り替え・サインアウト-->
+        <div class="container border-bottom border-3 border-black">
+            <div class="row">
+                <div class="col-6">
+                    <h2 class="display-4 mb-4">ToDo App</h2>
+                </div>
+                <div class="col-3">
+                    <a class="btn btn-xl btn-secondary btn-block text-uppercase" type="submit" th:unless="${todoItemForm.done}" th:href="@{/hello?done=true}">done</a>
+                    <a class="btn btn-xl btn-secondary btn-block text-uppercase" type="submit" th:if="${todoItemForm.done}" th:href="@{/hello?done=false}">back</a>
+                </div>
+                <div class="col-3">
+                    <form th:action="@{/logout}" method="post">
+                        <input class="btn btn-xl btn-primary btn-block text-uppercase" type="submit" value="Sign Out"/>
+                    </form>
                 </div>
             </div>
-        </footer>
+        </div>
         
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-        <!-- * *                               SB Forms JS                               * *-->
-        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
-        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-        <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+        <div class="container">
+            <div class="row">
+
+                <!--searchタブ-->
+                <div class="col-6">
+                    <button class="btn btn-primary"
+                    data-toggle="collapse"
+                    data-target="#search"
+                    aria-expand="false"
+                    aria-controls="search"
+                    col-6
+                    th:unless="${todoItemForm.done}" >Search</button>
+                    <div class="collapse" id="search">
+                        <div class="card card-body">
+                            <div>
+                                <form method="post" th:action="@{/searchTodo}" th:object="${todoItemForm}">
+                                    <h2>Search</h2>
+
+                                    <!--タイトル-->
+                                    <div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="title">Title</label>
+                                            <input class="form-control" placeholder="title" type="text" name="searchTitle" th:field="*{searchTitle}">
+                                        </div>
+                                        <!--カテゴリ-->
+                                        <div class="mb-3">
+                                            <label class="form-label" for="category">Category</label>
+                                            <select class="form-control"  name="searchCategory" th:field="*{searchCategory}">
+                                                <option value="0">-</option>
+                                                <option th:each="category : ${categoryMap}" th:value="${category.key}" th:text="${category.value}"></option>
+                                            </select>
+                                        </div>
+                                        <!--優先度-->
+                                        <div class="mb-3">
+                                            <label class="form-label" for="priority">Priority</label>
+                                            <select class="form-control" name="searchPriority" th:field="*{searchPriority}">
+                                                <option value="0">-</option>
+                                                <option th:each="priority : ${priorityMap}" th:value="${priority.key}" th:text="${priority.value}"></option>
+                                            </select>
+                                        </div>
+                                        <!--検索-->
+                                        <input class="btn btn-info" type="submit" value="Search" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--addタブ-->
+                <div class="col-6">
+                    <button class="btn btn-primary"
+                    data-toggle="collapse"
+                    data-target="#add"
+                    aria-expand="false"
+                    aria-controls="add"
+                    col-6
+                    th:unless="${todoItemForm.done}" >Add</button>
+                    <div class="collapse" id="add">
+                        <div class="card card-body">
+                            <!--todo追加-->
+                            <div>
+                                <form th:unless="${todoItemForm.done}" method="post" th:action="@{/new}" th:object="${todoItemForm}">
+                                    <h2>Add ToDo</h3>
+                                    <!--タイトル-->
+                                    <div class="mb-3">
+                                        <label class="form-label" for="title">Title</label>
+                                        <input class="form-control" placeholder="title" type="text" name="title" th:field="*{title}"/>
+                                    </div>
+                                    <!--カテゴリ-->
+                                    <div class="mb-3">
+                                        <label class="form-label" for="category">Category</label>
+                                        <select class="form-control" name="category" th:field="*{category}">
+                                            <option th:each="category : ${categoryMap}" th:value="${category.key}" th:text="${category.value}"></option>
+                                        </select>
+                                    </div>
+                                    <!--詳細-->
+                                    <div class="mb-3">
+                                        <label class="form-label" for="description">description</label>
+                                        <input class="form-control" placeholder="description" type="text" name="description" th:field="*{description}"/>
+                                    </div>
+                                    <!--優先度-->
+                                    <div class="mb-3">
+                                        <label class="form-label" for="priority">Priority</label>
+                                        <select class="form-control" name="priority" th:field="*{priority}">
+                                            <option th:each="priority : ${priorityMap}" th:value="${priority.key}" th:text="${priority.value}"></option>
+                                        </select>
+                                    </div>
+                                    <!--締日-->
+                                    <div class="mb-3">
+                                        <label class="form-label" for="dueDate">Due Date</label>
+                                        <input class="form-control" type="date" name="dueDate" id="dueDate"/>
+                                        <script>
+                                            var today = new Date();
+                                            var year = today.getFullYear();
+                                            var month = (today.getMonth() + 1).toString().padStart(2, '0');
+                                            var day = today.getDate().toString().padStart(2, '0');
+                                            var formattedDate = year + '-' + month + '-' + day;
+                                            document.getElementById('dueDate').value = formattedDate;
+                                        </script>
+                                    </div>
+                                    <!--追加-->
+                                    <input class="btn btn-info" type="submit" value="Add Task" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--エラーメッセージ-->
+                    <div class="error-message container text-danger" th:if="${todoItemForm.errorMessage}" th:text="${todoItemForm.errorMessage}"></div>
+                </div>
+            </div>
+        </div>
+
+        <p th:object="${todoItemForm}"></p>
+
+        <!--テーブル-->
+        <div class="container">
+            <h3>ToDo List</h3>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Create Date</th>
+                        <th>Due Date</th>
+                        <th>Done/Restore</th>
+                        <th th:if="${todoItemForm.done}">Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="todoItem : ${todoItemForm.todoItems}">
+                        <td th:text="${categoryMap[todoItem.category]}" />
+                        <td th:text="${todoItem.title}" />
+                        <td th:text="${todoItem.description}" />
+                        <td th:text="${priorityMap[todoItem.priority]}" />
+                        <td th:text="${todoItem.createDate}" />
+                        <td th:text="${todoItem.dueDate}" />
+                        <td>
+                            <form th:unless="${todoItemForm.done}" method="post" th:action="@{/done}" th:object="${todoItem}">
+                                <input type="hidden" name="id" th:value="*{id}" />
+                                <input class="btn btn-secondary" type="submit" value="Done" />
+                            </form>
+                            <form th:if="${todoItemForm.done}" method="post" th:action="@{/restore}" th:object="${todoItem}">
+                                <input type="hidden" name="id" th:value="*{id}" />
+                                <input class="btn btn-secondary" type="submit" value="Restore" />
+                            </form>
+                        </td>
+                        <td>
+                            <form th:if="${todoItemForm.done}" method="post" th:action="@{/delete}" th:object="${todoItem}">
+                                <input type="hidden" name="id" th:value="*{id}" />
+                                <input class="btn btn-secondary" type="submit" value="Delete" />
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="container">
+            <form th:if="${todoItemForm.done}" method="post" th:action="@{/allDelete}">
+                <input class="btn btn-danger" type="submit" value="All Done Delete" />
+            </form>
+        </div>
+        
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     </body>
 </html>

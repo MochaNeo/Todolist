@@ -16,11 +16,11 @@ public class TodoAddValidatorService {
 	    final Date dueDate = item.getDueDate();
 	    final Date yesterday = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
 	    
-	    final String titleNullError = "タイトルを入力してください";
-	    final String titleBlankError = "タイトルに空白が含まれています";
+	    final String titleNullError = "*タイトルを入力してください。";
+	    final String titleBlankError = "*タイトルに空白が含まれています。";
 	    final String[] ngWord = {};
-	    final String ngWordError = "NGワードに設定されている文字が含まれます。";
-	    final String dueDateError = "期日が昨日以前の日付です。有効な日付を設定してください";
+	    final String ngWordError = "*NGワードに設定されている文字が含まれます。";
+	    final String dueDateError = "*期日が昨日以前の日付です。有効な日付を設定してください。";
 	    String errorMessage = "";
 	    
 	    
