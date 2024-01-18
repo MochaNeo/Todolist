@@ -12,10 +12,8 @@ import jakarta.transaction.Transactional;
 @Service
 public class TodoAddService {
 	
-	
     @Autowired
     TodoRepository repository;
-    
     
     //todoを追加
     @Transactional
@@ -23,10 +21,10 @@ public class TodoAddService {
         if (validationResult != null) {
         	//バリデーションにてエラーが発生した場合の処理
         	todoItemForm.setErrorMessage(validationResult);
-        	todoItemForm.setTodoItems(repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
+        	todoItemForm.setTodoItems(repository.findByProgressOrderByPriorityDesc(todoItemForm.isProgress()));
             return validationResult;
         }	// バリデーションに合格した場合の処理
-        	item.setDone(false);
+        	item.setProgress(false);
             repository.save(item);
             return null;
     }

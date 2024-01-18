@@ -18,9 +18,9 @@ public interface TodoRepository extends JpaRepository<TodoItem, Long> {
 	
 	public static final TodoSearchService service = new TodoSearchService();
 	
-	
 	//優先度の降順で完了・未完了のタスクを返す
-    public List<TodoItem> findByDoneOrderByPriorityDesc(boolean done);
+    public List<TodoItem> findByProgressOrderByPriorityDesc(boolean done);
+    
     
     // JPQLを使用してカスタムのクエリメソッドを定義
     //WHERE 0=0は真となり全件取得する
@@ -29,7 +29,7 @@ public interface TodoRepository extends JpaRepository<TodoItem, Long> {
     "b.title LIKE %:#{#service.title}% " +
     "AND (:#{#service.category} = 0 OR b.category = :#{#service.category}) " +
     "AND (:#{#service.priority} = 0 OR b.priority = :#{#service.priority}) " +
-    "AND b.done = :#{#service.done} " +
+    "AND b.progress = :#{#service.progress} " +
     "ORDER BY b.priority DESC")
     public List<TodoItem> search(@Param("service") TodoSearchService service);
 }

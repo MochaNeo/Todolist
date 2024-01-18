@@ -23,8 +23,6 @@ public class TodoAddValidatorService {
 	    final String dueDateError = "*期日が昨日以前の日付です。有効な日付を設定してください。";
 	    String errorMessage = "";
 	    
-	    
-	    
 	    if (title.equals("")) {
 			errorMessage += titleNullError + "\n";
 			
@@ -35,7 +33,6 @@ public class TodoAddValidatorService {
 			errorMessage += titleBlankError + "\n";
 			
 		}
-	    
 	    
 	    for (String ngWords : ngWord) {
 			if (title.trim().toLowerCase().contains(ngWords)) {

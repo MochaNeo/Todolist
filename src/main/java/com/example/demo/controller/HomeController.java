@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.entity.TodoItem;
 import com.example.demo.form.TodoItemForm;
@@ -40,14 +41,16 @@ public class HomeController {
     private TodoAddValidatorService validator;
     
     //検索時の条件保存用MAP
-    public Map<String, Object> searchConditions = new HashMap<>();
+    // public Map<String, Object> searchConditions = new HashMap<>();
     
     
-    
+
     //デフォルトのページ
+    //modelattributeはtodoitemformにform(postされた値があれば)を代入する。getアクセスの場合にはnewされ、todoitemformインスタンスが作成される)
     @GetMapping("/hello")
     public String hello(@ModelAttribute TodoItemForm todoItemForm) {
-        todoItemForm.setTodoItems(repository.findByDoneOrderByPriorityDesc(todoItemForm.isDone()));
+        todoItemForm.setTodoItems(repository.findByProgressOrderByPriorityDesc(false));
+        todoItemForm.setDoneItems(repository.findByProgressOrderByPriorityDesc(true));
         return "hello";
     }
     
@@ -55,13 +58,21 @@ public class HomeController {
     
     //todoを検索する
     @PostMapping("/searchTodo")
-    public String searchTodo(@ModelAttribute TodoItemForm todoItemForm) {
-    		searchConditions.put("title", todoItemForm.getSearchTitle());
-    		searchConditions.put("category", todoItemForm.getSearchCategory());
-    		searchConditions.put("priority", todoItemForm.getSearchPriority());
+    public ModelAndView searchTodo(@ModelAttribute TodoItemForm todoItemForm, ModelAndView mav) {
+        //検索用のmapを作成する
+        Map<String, Object> searchConditions = new HashMap<>();
+            //searchConditionsにformでポストされたtitle, category, priorityの値を入れる。
+            searchConditions.put("title", todoItemForm.getSearchTitle());
+            searchConditions.put("category", todoItemForm.getSearchCategory());
+            searchConditions.put("priority", todoItemForm.getSearchPriority());
+        //TodoSearchServiceで検索を行う。searchConditionsを渡し、searchResultリストに代入する
     	List<TodoItem> searchResult = search.search(searchConditions);
+        //検索結果をsetTodoItemsに代入する。searchFlagをtrueにする。（setTodoItemsの値はテーブルに表示される(hello.html)）
     	todoItemForm.setTodoItems(searchResult);
-        return "hello";
+        boolean searchFlag = true;
+        mav.addObject("searchFlag", searchFlag);
+        mav.setViewName("hello");
+        return mav;
     }
     
     

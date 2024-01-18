@@ -26,7 +26,7 @@ public class TodoItem {
     private int priority;//優先度
     private Date createDate;//作成日
     private Date dueDate;//期日
-    private Boolean done;//達成状況
+    private Boolean progress;//達成状況
     
     
     //作成日を自動生成する

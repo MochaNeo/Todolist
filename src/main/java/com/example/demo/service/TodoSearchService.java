@@ -29,17 +29,14 @@ public class TodoSearchService {
 	private String title;
 	private int category;
 	private int priority;
-	private boolean done;
+	private boolean progress;
 	
-	
-	
+
     private static final Map<Integer, String> categoryList = new HashMap<Integer, String>() {{
     	put(1, "work");
     	put(2, "private");
     	put(3, "other");
     }};
-    
-    
     
     private static final Map<Integer, String> priorityList = new HashMap<Integer, String>() {{
     	put(1, "Low");
@@ -47,28 +44,20 @@ public class TodoSearchService {
     	put(3, "High");
     }};
     
-    
-    
     public Map<String, Object> condition = new HashMap<String, Object>() {{
     	put("title", "");
     	put("category", 0);
     	put("priority", 0);
-    	put("done", false);
+    	put("progress", false);
     }};
-    
-    
     
     public static Map<Integer, String> getCategoryList() {
     	return categoryList;
     }
     
-    
     public static Map<Integer, String> getPriorityList() {
     	return priorityList;
     }
-    
-    
-    
     
     //検索処理の実行
 	@SuppressWarnings("unchecked")
@@ -84,8 +73,6 @@ public class TodoSearchService {
         return repository.search(this);
 	}
 	
-	
-	
 	//conditionの値をsetFieldにすべて代入する
     public void setCriteria(Map<String, Object> condition) {
     	//conditionのkey,valueをsetFieldですべて実行
@@ -93,7 +80,6 @@ public class TodoSearchService {
             setField(fieldName, condition.get(fieldName));
         }
     }
-    
     
     //リフレクションの処理
     public void setField(String fieldName, Object value) {

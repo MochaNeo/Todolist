@@ -14,15 +14,11 @@
       </head>
 
     <body>
-        <!--タイトル・完了、未完了切り替え・サインアウト-->
+        <!--タイトル・サインアウト-->
         <div class="container border-bottom border-3 border-black">
             <div class="row">
-                <div class="col-6">
+                <div class="col-9">
                     <h2 class="display-4 mb-4">ToDo App</h2>
-                </div>
-                <div class="col-3">
-                    <a class="btn btn-xl btn-secondary btn-block text-uppercase" type="submit" th:unless="${todoItemForm.done}" th:href="@{/hello?done=true}">done</a>
-                    <a class="btn btn-xl btn-secondary btn-block text-uppercase" type="submit" th:if="${todoItemForm.done}" th:href="@{/hello?done=false}">back</a>
                 </div>
                 <div class="col-3">
                     <form th:action="@{/logout}" method="post">
@@ -43,8 +39,7 @@
                     data-target="#search"
                     aria-expand="false"
                     aria-controls="search"
-                    col-6
-                    th:unless="${todoItemForm.done}" >Search</button>
+                    col-6 >Search</button>
                     <div class="collapse" id="search">
                         <div class="card card-body">
                             <div>
@@ -52,34 +47,39 @@
                                     <h2>Search</h2>
 
                                     <!--タイトル-->
-                                    <div>
-                                        <div class="mb-3">
-                                            <label class="form-label" for="title">Title</label>
-                                            <input class="form-control" placeholder="title" type="text" name="searchTitle" th:field="*{searchTitle}">
-                                        </div>
-                                        <!--カテゴリ-->
-                                        <div class="mb-3">
-                                            <label class="form-label" for="category">Category</label>
-                                            <select class="form-control"  name="searchCategory" th:field="*{searchCategory}">
-                                                <option value="0">-</option>
-                                                <option th:each="category : ${categoryMap}" th:value="${category.key}" th:text="${category.value}"></option>
-                                            </select>
-                                        </div>
-                                        <!--優先度-->
-                                        <div class="mb-3">
-                                            <label class="form-label" for="priority">Priority</label>
-                                            <select class="form-control" name="searchPriority" th:field="*{searchPriority}">
-                                                <option value="0">-</option>
-                                                <option th:each="priority : ${priorityMap}" th:value="${priority.key}" th:text="${priority.value}"></option>
-                                            </select>
-                                        </div>
-                                        <!--検索-->
-                                        <input class="btn btn-info" type="submit" value="Search" />
+                                    <div class="mb-3">
+                                        <label class="form-label" for="title">Title</label>
+                                        <input class="form-control" placeholder="title" type="text" name="searchTitle" th:field="*{searchTitle}">
                                     </div>
+                                    <!--カテゴリ-->
+                                    <div class="mb-3">
+                                        <label class="form-label" for="category">Category</label>
+                                        <select class="form-control"  name="searchCategory" th:field="*{searchCategory}">
+                                            <option value="0">-</option>
+                                            <option th:each="category : ${categoryMap}" th:value="${category.key}" th:text="${category.value}"></option>
+                                        </select>
+                                    </div>
+                                    <!--優先度-->
+                                    <div class="mb-3">
+                                        <label class="form-label" for="priority">Priority</label>
+                                        <select class="form-control" name="searchPriority" th:field="*{searchPriority}">
+                                            <option value="0">-</option>
+                                            <option th:each="priority : ${priorityMap}" th:value="${priority.key}" th:text="${priority.value}"></option>
+                                        </select>
+                                    </div>
+                                    <!--検索-->
+                                    <input class="btn btn-info" type="submit" value="Search" />
+
                                 </form>
                             </div>
                         </div>
                     </div>
+                    <!--検索結果のリセット-->
+                    <div class="text-danger" th:if="${searchFlag}">
+                        <form th:action="@{/hello}" method="get">
+                            <input class="btn btn-danger" type="submit" value="Search Result Reset" />
+                        </form>
+                    </div>                    
                 </div>
 
                 <!--addタブ-->
@@ -89,14 +89,13 @@
                     data-target="#add"
                     aria-expand="false"
                     aria-controls="add"
-                    col-6
-                    th:unless="${todoItemForm.done}" >Add</button>
+                    col-6>Add</button>
                     <div class="collapse" id="add">
                         <div class="card card-body">
-                            <!--todo追加-->
                             <div>
-                                <form th:unless="${todoItemForm.done}" method="post" th:action="@{/new}" th:object="${todoItemForm}">
+                                <form method="post" th:action="@{/new}" th:object="${todoItemForm}">
                                     <h2>Add ToDo</h3>
+
                                     <!--タイトル-->
                                     <div class="mb-3">
                                         <label class="form-label" for="title">Title</label>
@@ -141,14 +140,12 @@
                         </div>
                     </div>
                     <!--エラーメッセージ-->
-                    <div class="error-message container text-danger" th:if="${todoItemForm.errorMessage}" th:text="${todoItemForm.errorMessage}"></div>
+                    <div class="error-message container text-danger" th:text="${todoItemForm.errorMessage}"></div>
                 </div>
             </div>
         </div>
 
-        <p th:object="${todoItemForm}"></p>
-
-        <!--テーブル-->
+        <!--todoテーブル-->
         <div class="container">
             <h3>ToDo List</h3>
             
@@ -162,7 +159,7 @@
                         <th>Create Date</th>
                         <th>Due Date</th>
                         <th>Done/Restore</th>
-                        <th th:if="${todoItemForm.done}">Delete</th>
+                        <th>Delete</th>
                     </tr>
                 </thead>
 
@@ -175,19 +172,15 @@
                         <td th:text="${todoItem.createDate}" />
                         <td th:text="${todoItem.dueDate}" />
                         <td>
-                            <form th:unless="${todoItemForm.done}" method="post" th:action="@{/done}" th:object="${todoItem}">
+                            <form method="post" th:action="@{/done}" th:object="${todoItem}">
                                 <input type="hidden" name="id" th:value="*{id}" />
                                 <input class="btn btn-secondary" type="submit" value="Done" />
                             </form>
-                            <form th:if="${todoItemForm.done}" method="post" th:action="@{/restore}" th:object="${todoItem}">
-                                <input type="hidden" name="id" th:value="*{id}" />
-                                <input class="btn btn-secondary" type="submit" value="Restore" />
-                            </form>
                         </td>
                         <td>
-                            <form th:if="${todoItemForm.done}" method="post" th:action="@{/delete}" th:object="${todoItem}">
+                            <form method="post" th:action="@{/delete}" th:object="${todoItem}">
                                 <input type="hidden" name="id" th:value="*{id}" />
-                                <input class="btn btn-secondary" type="submit" value="Delete" />
+                                <input class="btn btn-danger" type="submit" value="Delete" />
                             </form>
                         </td>
                     </tr>
@@ -195,8 +188,55 @@
             </table>
         </div>
         
+
+        <!--doneテーブル-->
         <div class="container">
-            <form th:if="${todoItemForm.done}" method="post" th:action="@{/allDelete}">
+            <h3>Done List</h3>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                        <th>Create Date</th>
+                        <th>Due Date</th>
+                        <th>Done/Restore</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="todoItem : ${todoItemForm.doneItems}">
+                        <td th:text="${categoryMap[todoItem.category]}" />
+                        <td th:text="${todoItem.title}" />
+                        <td th:text="${todoItem.description}" />
+                        <td th:text="${priorityMap[todoItem.priority]}" />
+                        <td th:text="${todoItem.createDate}" />
+                        <td th:text="${todoItem.dueDate}" />
+                        <td>
+                            <form method="post" th:action="@{/restore}" th:object="${todoItem}">
+                                <input type="hidden" name="id" th:value="*{id}" />
+                                <input class="btn btn-secondary" type="submit" value="Restore" />
+                            </form>
+                        </td>
+                        <td>
+                            <form method="post" th:action="@{/delete}" th:object="${todoItem}">
+                                <input type="hidden" name="id" th:value="*{id}" />
+                                <input class="btn btn-danger" type="submit" value="Delete" />
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+        <div class="container">
+            <form method="post" th:action="@{/allDelete}">
                 <input class="btn btn-danger" type="submit" value="All Done Delete" />
             </form>
         </div>

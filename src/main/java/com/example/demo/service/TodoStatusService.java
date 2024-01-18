@@ -15,17 +15,13 @@ public class TodoStatusService {
 	@Autowired
 	TodoRepository repository;
 	
-	
-	
 	//todoステータスの変更
 	@Transactional
 	public void updateStatus(long id, boolean done) {
 	    TodoItem item = repository.findById(id).get();
-	    item.setDone(done);
+	    item.setProgress(done);
 	    repository.save(item);
 	}
-	
-	
 	
     //todoの削除
     @Transactional
@@ -33,12 +29,10 @@ public class TodoStatusService {
     	repository.deleteById(id);
     }
     
-    
-    
     //todoをすべて削除
     @Transactional
     public void allDeleteTodo() {
-        repository.deleteAll(repository.findByDoneOrderByPriorityDesc(true));//itemsToDeleteのレコードをすべて削除
+        repository.deleteAll(repository.findByProgressOrderByPriorityDesc(true));//itemsToDeleteのレコードをすべて削除
     }
 
 }
