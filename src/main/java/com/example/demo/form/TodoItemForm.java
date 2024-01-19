@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.example.demo.entity.TodoItem;
 
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,12 +16,16 @@ import lombok.Setter;
 @Setter
 public class TodoItemForm {
     private boolean progress;
-    private String errorMessage;
     private List<TodoItem> todoItems;
     private List<TodoItem> doneItems;
+
+
+    @Column(nullable = false)
+    @NotBlank(message = "タイトルは必須です")
+    @NotNull(message = "タイトルは必須です")
     private String title = "";
-    private String description = "";
     private int category = 0;
+    private String description = "";
     private int priority = 0;
     //searchメソッドで使用する
     //未入力の場合にはデフォルトの値が使用できるようにする

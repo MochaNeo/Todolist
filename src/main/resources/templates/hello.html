@@ -140,7 +140,7 @@
                         </div>
                     </div>
                     <!--エラーメッセージ-->
-                    <div class="error-message container text-danger" th:text="${todoItemForm.errorMessage}"></div>
+                    <div class="error-message container text-danger" th:text="${errorMessage}"></div>
                 </div>
             </div>
         </div>
@@ -164,7 +164,7 @@
                 </thead>
 
                 <tbody>
-                    <tr th:each="todoItem : ${todoItemForm.todoItems}">
+                    <tr th:each="todoItem : ${todo}">
                         <td th:text="${categoryMap[todoItem.category]}" />
                         <td th:text="${todoItem.title}" />
                         <td th:text="${todoItem.description}" />
@@ -208,7 +208,7 @@
                 </thead>
 
                 <tbody>
-                    <tr th:each="todoItem : ${todoItemForm.doneItems}">
+                    <tr th:each="todoItem : ${done}">
                         <td th:text="${categoryMap[todoItem.category]}" />
                         <td th:text="${todoItem.title}" />
                         <td th:text="${todoItem.description}" />
