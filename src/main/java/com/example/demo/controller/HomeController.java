@@ -27,16 +27,16 @@ public class HomeController {
 //他クラスのDI
     @Autowired
     TodoRepository repository;
-    
+
     @Autowired
     private TodoStatusService status;
-    
+
     @Autowired
     private TodoSearchService search;
 
     //デフォルトのページ
     //modelattributeはtodoitemformにform(postされた値があれば)を代入する。getアクセスの場合にはnewされ、todoitemformインスタンスが作成される)
-    @GetMapping("/hello")
+    @GetMapping("/")
     public ModelAndView hello(@ModelAttribute TodoItemForm todoItemForm, ModelAndView mav) {
         mav.setViewName("hello");
         List<TodoItem> todo = repository.findByProgressOrderByPriorityDesc(false);
@@ -45,9 +45,9 @@ public class HomeController {
         mav.addObject("done", done);
         return mav;
     }
-    
-    
-    
+
+
+
     //todoを検索する
     @PostMapping("/searchTodo")
     public ModelAndView searchTodo(@ModelAttribute TodoItemForm searchForm, ModelAndView mav) {
@@ -66,9 +66,9 @@ public class HomeController {
         mav.setViewName("hello");
         return mav;
     }
-    
-    
-    
+
+
+
     // todoを追加する
     @PostMapping("/new")
     public String newItem(@ModelAttribute @Validated TodoItemForm addForm, BindingResult result, Model model, TodoItem item) {
@@ -81,38 +81,36 @@ public class HomeController {
         repository.save(item);
         return "redirect:/hello";
     }
-    
-    
 
-    
-    
+
+
     //アイテムを完了にする
     @PostMapping("/done")
     public String done(@RequestParam("id") long id) {
         status.updateStatus(id, true);
         return "redirect:/hello?done=false";
     }
-    
-    
-    
+
+
+
     //アイテムを未完了にする
     @PostMapping("/restore")
     public String restore(@RequestParam("id") long id) {
         status.updateStatus(id, false);
         return "redirect:/hello?done=true";
     }
-    
-    
-    
+
+
+
     //todoを削除する
     @PostMapping("/delete")
     public String delete(@RequestParam("id") long id) {
     	status.deleteTodo(id);
         return "redirect:/hello?done=true";
     }
-    
-    
-    
+
+
+
     //完了済みのtodoをすべて削除する
     @PostMapping("/allDelete")
     public String allDelete() {

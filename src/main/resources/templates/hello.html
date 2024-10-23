@@ -14,16 +14,11 @@
       </head>
 
     <body>
-        <!--タイトル・サインアウト-->
+        <!--タイトル-->
         <div class="container border-bottom border-3 border-black">
             <div class="row">
                 <div class="col-9">
                     <h2 class="display-4 mb-4">ToDo App</h2>
-                </div>
-                <div class="col-3">
-                    <form th:action="@{/logout}" method="post">
-                        <input class="btn btn-xl btn-primary btn-block text-uppercase" type="submit" value="Sign Out"/>
-                    </form>
                 </div>
             </div>
         </div>
@@ -79,7 +74,7 @@
                         <form th:action="@{/hello}" method="get">
                             <input class="btn btn-danger" type="submit" value="Search Result Reset" />
                         </form>
-                    </div>                    
+                    </div>
                 </div>
 
                 <!--addタブ-->
