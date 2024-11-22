@@ -12,6 +12,9 @@ COPY .mvn/ .mvn/
 COPY mvnw pom.xml ./
 COPY src ./src/
 
+# mvnwに実行権限を付与
+RUN chmod +x ./mvnw
+
 # Mavenでビルド
 RUN ./mvnw package -DskipTests
 
